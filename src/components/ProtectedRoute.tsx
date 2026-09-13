@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { LoginPage } from './LoginPage';
 import { Language, UserRole } from '../types';
@@ -22,6 +22,12 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 }) => {
   const { isAuthenticated, isLoading, user, setIntendedRoute } = useAuth();
 
+  useEffect(() => {
+    if (!isAuthenticated && !isLoading) {
+      setIntendedRoute(routeName);
+    }
+  }, [isAuthenticated, isLoading, routeName, setIntendedRoute]);
+
   if (isLoading) {
     return (
       <div className="min-h-[50vh] flex flex-col items-center justify-center space-y-4 py-12">
@@ -34,9 +40,6 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   }
 
   if (!isAuthenticated) {
-    // Record intended route for redirect after login
-    setIntendedRoute(routeName);
-
     return (
       <div className="space-y-6 py-6 animate-in fade-in duration-200">
         <div className="max-w-md mx-auto p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-900 dark:text-amber-200 flex items-center gap-3">
