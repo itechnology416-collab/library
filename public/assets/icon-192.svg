@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="192" height="192">
+  <rect width="192" height="192" rx="36" fill="#0b1c30"/>
+  <rect x="12" y="12" width="168" height="168" rx="28" fill="none" stroke="#9b4500" stroke-width="4" stroke-opacity="0.4"/>
+  <!-- Open Book Emblem -->
+  <path d="M42 60 C58 52 82 52 96 66 C110 52 134 52 150 60 L150 136 C134 128 110 128 96 142 C82 128 58 128 42 136 Z" fill="#9b4500"/>
+  <path d="M96 66 L96 142" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
+  <!-- Pen Nib / Star Accent -->
+  <polygon points="96,32 103,46 118,48 107,59 110,74 96,66 82,74 85,59 74,48 89,46" fill="#ffdbca"/>
+  <!-- Monogram text -->
+  <text x="96" y="165" fill="#ffffff" font-family="sans-serif" font-size="16" font-weight="900" text-anchor="middle" letter-spacing="2">WKI PRESS</text>
+</svg>

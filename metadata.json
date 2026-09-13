@@ -1,0 +1,6 @@
+{
+  "name": "Wirtuu Kompiitaraa Ilillii Publishing Services",
+  "description": "Professional Academic Publishing, Multilingual Typesetting & E-Learning Platform - Haramaya University",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
