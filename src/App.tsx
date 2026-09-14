@@ -67,6 +67,7 @@ import { JournalWorkflowModal } from './components/JournalWorkflowModal';
 import { PWAInstallBanner } from './components/PWAInstallBanner';
 import { LoginPage } from './components/LoginPage';
 import { ProtectedRoute } from './components/ProtectedRoute';
+import { ComputerTrainingPage } from './components/ComputerTrainingPage';
 import { useAuth } from './context/AuthContext';
 
 export default function App() {
@@ -107,6 +108,7 @@ export default function App() {
   const [courses, setCourses] = useState<Course[]>(INITIAL_COURSES);
   const [requests, setRequests] = useState<ServiceRequest[]>(INITIAL_REQUESTS);
   const [certificates, setCertificates] = useState<Certificate[]>(INITIAL_CERTIFICATES);
+  const [bookLanguageFilter, setBookLanguageFilter] = useState<string>('all');
 
   // Modal and drawer states
   const [showRequestModal, setShowRequestModal] = useState<boolean>(false);
@@ -412,11 +414,13 @@ export default function App() {
           <div className="pt-2 space-y-4">
             <PublishingCategories
               currentLanguage={currentLanguage}
-              onSelectCategory={(catId) => {}}
+              onSelectCategory={(catId) => setBookLanguageFilter(catId)}
             />
             <BookLibrary
               currentLanguage={currentLanguage}
               books={books}
+              selectedLanguage={bookLanguageFilter}
+              onLanguageFilterChange={setBookLanguageFilter}
               onOpenReader={(b) => setActiveReaderBook(b)}
               onOpenPreview={(b) => setActivePreviewBook(b)}
               onToggleBookmark={handleToggleBookmark}
@@ -430,8 +434,14 @@ export default function App() {
           <div className="pt-2 space-y-6">
             <ELearningBanner
               currentLanguage={currentLanguage}
-              onStartLearning={() => {}}
-              onBrowseCourses={() => {}}
+              onStartLearning={() => {
+                const el = document.getElementById('elearning-player') || document.querySelector('main');
+                el?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              onBrowseCourses={() => {
+                const el = document.getElementById('elearning-player') || document.querySelector('main');
+                el?.scrollIntoView({ behavior: 'smooth' });
+              }}
             />
             <ELearningSection
               currentLanguage={currentLanguage}
@@ -456,6 +466,18 @@ export default function App() {
                   setActiveTab('dashboards');
                 }
               }}
+            />
+          </div>
+        )}
+
+        {/* TAB: COMPUTER TRAINING SKILLS */}
+        {activeTab === 'computer_training' && (
+          <div className="pt-2">
+            <ComputerTrainingPage
+              currentLanguage={currentLanguage}
+              onOpenVerify={() => setShowVerifyModal(true)}
+              onShowToast={showToast}
+              onNavigateHome={() => setActiveTab('home')}
             />
           </div>
         )}

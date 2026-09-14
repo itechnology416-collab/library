@@ -8,6 +8,8 @@ interface BookLibraryProps {
   onOpenReader: (book: Book) => void;
   onOpenPreview: (book: Book) => void;
   onToggleBookmark: (bookId: string) => void;
+  selectedLanguage?: string;
+  onLanguageFilterChange?: (lang: string) => void;
 }
 
 export const BookLibrary: React.FC<BookLibraryProps> = ({
@@ -16,8 +18,18 @@ export const BookLibrary: React.FC<BookLibraryProps> = ({
   onOpenReader,
   onOpenPreview,
   onToggleBookmark,
+  selectedLanguage,
+  onLanguageFilterChange,
 }) => {
-  const [filterLang, setFilterLang] = useState<string>('all');
+  const [internalFilterLang, setInternalFilterLang] = useState<string>('all');
+  const filterLang = selectedLanguage !== undefined ? selectedLanguage : internalFilterLang;
+  const setFilter = (lang: string) => {
+    if (onLanguageFilterChange) {
+      onLanguageFilterChange(lang);
+    } else {
+      setInternalFilterLang(lang);
+    }
+  };
   const t = translations[currentLanguage];
 
   const filteredBooks = books.filter((b) => {
@@ -49,7 +61,7 @@ export const BookLibrary: React.FC<BookLibraryProps> = ({
             ].map((f) => (
               <button
                 key={f.id}
-                onClick={() => setFilterLang(f.id)}
+                onClick={() => setFilter(f.id)}
                 className={`px-2.5 py-1 rounded-lg text-xs font-semibold shrink-0 transition-all cursor-pointer ${
                   filterLang === f.id
                     ? 'bg-secondary text-on-secondary shadow-sm'

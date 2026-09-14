@@ -4,12 +4,14 @@ import fs from 'fs';
 import cookieParser from 'cookie-parser';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
+import { GoogleGenAI } from '@google/genai';
 import { createServer as createViteServer } from 'vite';
 
 const PORT = 3000;
 const JWT_SECRET = process.env.JWT_SECRET || 'academic_wki_jwt_secret_secure_key_2026';
 const DATA_DIR = path.join(process.cwd(), '.data');
 const USERS_FILE = path.join(DATA_DIR, 'users.json');
+const REQUESTS_FILE = path.join(DATA_DIR, 'requests.json');
 
 export interface StoredUser {
   id: string;
@@ -50,6 +52,25 @@ function saveUsers(users: StoredUser[]): void {
     fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2), 'utf-8');
   } catch (err) {
     console.error('Error saving users file:', err);
+  }
+}
+
+function loadRequests() {
+  try {
+    if (fs.existsSync(REQUESTS_FILE)) {
+      return JSON.parse(fs.readFileSync(REQUESTS_FILE, 'utf-8'));
+    }
+  } catch (err) {
+    console.error('Error loading requests:', err);
+  }
+  return [];
+}
+
+function saveRequests(reqs: any[]) {
+  try {
+    fs.writeFileSync(REQUESTS_FILE, JSON.stringify(reqs, null, 2), 'utf-8');
+  } catch (err) {
+    console.error('Error saving requests:', err);
   }
 }
 
@@ -361,6 +382,58 @@ async function startServer() {
   app.post('/api/auth/logout', (_req: Request, res: Response) => {
     res.clearCookie('wki_auth_token');
     res.json({ success: true, message: 'Logged out successfully.' });
+  });
+
+  // 7. Requests Endpoints
+  app.get('/api/requests', (_req: Request, res: Response) => {
+    const requests = loadRequests();
+    res.json({ success: true, requests });
+  });
+
+  app.post('/api/requests', (req: Request, res: Response) => {
+    const requests = loadRequests();
+    const newReq = {
+      id: `WKI-REQ-${Date.now().toString(36).toUpperCase()}`,
+      createdAt: new Date().toISOString(),
+      status: 'Submitted',
+      ...req.body,
+    };
+    requests.unshift(newReq);
+    saveRequests(requests);
+    res.json({ success: true, request: newReq });
+  });
+
+  // 8. AI Academic Polish Endpoint
+  app.post('/api/ai/polish', async (req: Request, res: Response) => {
+    try {
+      const { text } = req.body;
+      if (!text) {
+        res.status(400).json({ success: false, message: 'Text content is required for polishing.' });
+        return;
+      }
+
+      const apiKey = process.env.GEMINI_API_KEY;
+      if (!apiKey) {
+        res.status(500).json({ success: false, message: 'GEMINI_API_KEY is not configured.' });
+        return;
+      }
+
+      const ai = new GoogleGenAI({ apiKey });
+      const prompt = `You are an expert senior academic editor at Haramaya University Press. Please polish and elevate the following text for clarity, academic rigor, tone, and grammar:\n\n${text}`;
+
+      const response = await ai.models.generateContent({
+        model: 'gemini-2.5-flash',
+        contents: prompt,
+      });
+
+      res.json({
+        success: true,
+        polishedText: response.text || text,
+      });
+    } catch (err: any) {
+      console.error('AI polish error:', err);
+      res.status(500).json({ success: false, message: err.message || 'AI polishing failed.' });
+    }
   });
 
   // -------------------------------------------------------------
