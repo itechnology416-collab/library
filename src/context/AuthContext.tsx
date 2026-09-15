@@ -133,6 +133,34 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
+  const refreshUser = async (): Promise<void> => {
+    const savedToken = localStorage.getItem(TOKEN_KEY) || token;
+    if (!savedToken) return;
+    try {
+      const res = await fetch('/api/auth/me', {
+        headers: { Authorization: `Bearer ${savedToken}` },
+        credentials: 'include',
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && data.user) {
+          setUser(data.user);
+          localStorage.setItem(USER_KEY, JSON.stringify(data.user));
+        }
+      }
+    } catch (err) {
+      console.warn('Could not refresh user session:', err);
+    }
+  };
+
+  const hasPermission = (permission: string): boolean => {
+    if (!user) return false;
+    if (user.status === 'SUSPENDED' || user.status === 'DISABLED') return false;
+    if (user.role === 'superadmin' || user.isPrimarySuperAdmin) return true;
+    if (!user.permissions || !Array.isArray(user.permissions)) return false;
+    return user.permissions.includes(permission) || user.permissions.includes('*');
+  };
+
   const logout = async (): Promise<void> => {
     try {
       await fetch('/api/auth/logout', {
@@ -162,6 +190,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         logout,
         intendedRoute,
         setIntendedRoute,
+        hasPermission,
+        refreshUser,
       }}
     >
       {children}

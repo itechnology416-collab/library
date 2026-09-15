@@ -3,7 +3,7 @@ import { Language } from '../types';
 
 interface DashboardsHubProps {
   currentLanguage: Language;
-  onSelectDashboard: (tab: 'portal' | 'student' | 'admin' | 'peer_review' | 'faculty' | 'repository' | 'irb' | 'tech_transfer' | 'store') => void;
+  onSelectDashboard: (tab: 'portal' | 'student' | 'admin' | 'peer_review' | 'faculty' | 'repository' | 'irb' | 'tech_transfer' | 'store' | 'rbac_admin') => void;
   pendingRequestsCount: number;
   totalBooksCount: number;
   totalCoursesCount: number;
@@ -104,6 +104,17 @@ export const DashboardsHub: React.FC<DashboardsHubProps> = ({
       theme: 'from-emerald-950/20 via-teal-950/10 to-transparent hover:border-emerald-500/50',
       actionText: 'Open Tech Transfer & Extension Hub',
       buttonColor: 'bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold',
+    },
+    {
+      id: 'rbac_admin' as const,
+      title: 'Enterprise Hierarchical RBAC & Permissions Control',
+      subtitle: 'Primary Super Admin control portal: Delegated administrator hierarchy, client onboarding, tenant scope boundaries, 10-category granular permission matrix, and real-time security audit log.',
+      icon: 'shield',
+      badge: 'Super Admin & RBAC Security Center',
+      badgeColor: 'bg-indigo-500/15 text-indigo-700 dark:text-indigo-300 border-indigo-500/30',
+      theme: 'from-slate-950 via-indigo-950 to-slate-900 border-indigo-500/40 text-white hover:border-indigo-400',
+      actionText: 'Open Enterprise RBAC System',
+      buttonColor: 'bg-indigo-600 hover:bg-indigo-500 text-white font-bold',
     },
     {
       id: 'store' as const,

@@ -475,21 +475,123 @@ export interface DOIMetadataState {
   targetUrl: string;
 }
 
-// Phase 12: Authentication and Authorization System
-export type UserRole = 'author' | 'scholar' | 'reviewer' | 'faculty' | 'admin';
+// Phase 12: Authentication and Authorization System - Enterprise RBAC
+export type UserRole =
+  | 'superadmin'
+  | 'admin'
+  | 'client'
+  | 'user'
+  | 'author'
+  | 'scholar'
+  | 'reviewer'
+  | 'faculty'
+  | 'student';
+
+export type UserStatus = 'ACTIVE' | 'SUSPENDED' | 'DISABLED' | 'PENDING';
+
+export type GranularPermission =
+  // User Management
+  | 'users.view'
+  | 'users.create'
+  | 'users.edit'
+  | 'users.delete'
+  | 'users.suspend'
+  | 'users.activate'
+  | 'users.reset_password'
+  // Administrator Management
+  | 'admins.view'
+  | 'admins.create'
+  | 'admins.edit'
+  | 'admins.delete'
+  | 'admins.suspend'
+  | 'admins.activate'
+  | 'admins.permissions'
+  // Client Management
+  | 'clients.view'
+  | 'clients.create'
+  | 'clients.edit'
+  | 'clients.delete'
+  | 'clients.suspend'
+  | 'clients.activate'
+  // Content Management
+  | 'content.view'
+  | 'content.create'
+  | 'content.edit'
+  | 'content.delete'
+  | 'content.publish'
+  // Digital Resources
+  | 'resources.view'
+  | 'resources.upload'
+  | 'resources.edit'
+  | 'resources.delete'
+  | 'resources.publish'
+  | 'resources.download'
+  // Sales
+  | 'sales.view'
+  | 'sales.create'
+  | 'sales.edit'
+  | 'sales.refund'
+  // Payments
+  | 'payments.view'
+  | 'payments.verify'
+  | 'payments.approve'
+  | 'payments.reject'
+  // Download Access
+  | 'downloads.view'
+  | 'downloads.approve'
+  | 'downloads.revoke'
+  // Reports
+  | 'reports.view'
+  | 'reports.export'
+  // System
+  | 'settings.view'
+  | 'settings.edit'
+  | 'audit_logs.view'
+  | 'notifications.manage';
+
+export interface PermissionCategoryGroup {
+  id: string;
+  name: string;
+  icon: string;
+  permissions: { id: GranularPermission; label: string; description: string }[];
+}
 
 export interface User {
   id: string;
   email: string;
   name: string;
-  role: UserRole;
-  affiliation?: string;
+  username?: string;
   phone?: string;
+  role: UserRole;
+  status: UserStatus;
+  permissions: string[];
+  scopeId?: string; // Tenant/Admin Scope isolation
+  assignedClientIds?: string[];
+  isPrimarySuperAdmin?: boolean; // ONE primary Super Admin
+  expirationDate?: string;
+  affiliation?: string;
   orcid?: string;
   staffOrStudentId?: string;
   avatarUrl?: string;
+  createdBy?: string;
   createdAt: string;
   lastLoginAt?: string;
+}
+
+export interface EnterpriseAuditLog {
+  id: string;
+  performedByUserId: string;
+  performedByUserName: string;
+  performedByUserRole: string;
+  action: string;
+  target: string;
+  targetId: string;
+  targetName?: string;
+  details: string;
+  timestamp: string;
+  ipAddress?: string;
+  userAgent?: string;
+  result: 'SUCCESS' | 'DENIED' | 'FAILED';
 }
 
 export interface AuthResponse {
@@ -907,6 +1009,8 @@ export interface AuthContextType {
   logout: () => Promise<void>;
   intendedRoute: string | null;
   setIntendedRoute: (route: string | null) => void;
+  hasPermission: (permission: string) => boolean;
+  refreshUser: () => Promise<void>;
 }
 
 // ============================================================================

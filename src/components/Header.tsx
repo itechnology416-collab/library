@@ -139,7 +139,7 @@ export const Header: React.FC<HeaderProps> = ({
       {/* 1. TOPMOST: INSTITUTIONAL CONTACT & UTILITY BAR (h-8 / 32px)               */}
       {/* ========================================================================= */}
       <div className="w-full bg-[#0f172a] dark:bg-[#050505] text-slate-200 text-xs border-b border-slate-800 dark:border-[#1a1a1a] transition-colors shadow-xs relative z-50">
-        <div className="w-full h-8 px-3 sm:px-4 md:px-6 flex items-center justify-between gap-2 text-[11px] font-medium overflow-x-hidden">
+        <div className="w-full min-h-[36px] py-1 px-3 sm:px-4 md:px-6 flex items-center justify-between gap-3 text-[11px] font-medium overflow-x-auto no-scrollbar">
           {/* Institutional Affiliation & Tagline */}
           <div className="flex items-center gap-2 min-w-0 shrink">
             <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-400/20 text-amber-300 font-bold text-[10px] sm:text-[11px] border border-amber-400/30 tracking-wide uppercase shrink-0">
@@ -153,33 +153,32 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
 
           {/* Contact Numbers, Telegram & Hubs Shortcut */}
-          <div className="flex items-center gap-2 sm:gap-3 lg:gap-4 shrink-0 text-[11px]">
+          <div className="flex items-center gap-2 sm:gap-4 shrink-0 text-[11px] overflow-x-auto py-0.5 no-scrollbar">
             <a
               href="tel:+251927650724"
-              className="flex items-center gap-1 text-slate-300 hover:text-amber-300 transition-colors font-mono"
-              title="Direct Telephone"
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-100 hover:text-amber-300 border border-slate-700/60 transition-all font-mono text-[11px] font-bold tracking-wide whitespace-nowrap shrink-0 shadow-xs"
+              title="Primary Telephone"
             >
-              <span className="material-symbols-outlined text-[13px] text-amber-400 shrink-0">call</span>
-              <span className="hidden xs:inline">+251 927 650 724</span>
-              <span className="xs:hidden">Call</span>
+              <span className="material-symbols-outlined text-[14px] text-amber-400 shrink-0">call</span>
+              <span>+251 927 650 724</span>
             </a>
 
             <a
               href="tel:+251961189074"
-              className="hidden md:flex items-center gap-1 text-slate-300 hover:text-amber-300 transition-colors font-mono"
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-100 hover:text-amber-300 border border-slate-700/60 transition-all font-mono text-[11px] font-bold tracking-wide whitespace-nowrap shrink-0 shadow-xs"
               title="Secondary Telephone"
             >
-              <span className="material-symbols-outlined text-[13px] text-amber-400 shrink-0">call</span>
+              <span className="material-symbols-outlined text-[14px] text-amber-400 shrink-0">call</span>
               <span>+251 961 189 074</span>
             </a>
 
-            <span className="hidden sm:inline text-slate-700">|</span>
+            <span className="hidden sm:inline text-slate-600 font-light select-none mx-0.5">|</span>
 
             <a
               href="https://t.me/FEYSAL_8"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1 text-slate-300 hover:text-amber-300 transition-colors"
+              className="flex items-center gap-1 px-2 py-1 rounded-md bg-slate-800/60 hover:bg-slate-700 text-slate-200 hover:text-amber-300 transition-colors shrink-0 whitespace-nowrap"
               title="Official Telegram Channel / Contact"
             >
               <span className="material-symbols-outlined text-[13px] text-amber-400 shrink-0">send</span>
@@ -659,7 +658,7 @@ export const Header: React.FC<HeaderProps> = ({
                       {user.name}
                     </span>
                     <span className="text-[9px] font-mono text-secondary uppercase font-semibold truncate leading-none">
-                      {user.role}
+                      {user.role === 'superadmin' || user.isPrimarySuperAdmin ? 'Super Admin 🛡️' : user.role}
                     </span>
                   </div>
                   <span className="material-symbols-outlined text-[15px] text-on-surface-variant shrink-0">
@@ -671,7 +670,7 @@ export const Header: React.FC<HeaderProps> = ({
                   <div className="absolute right-0 mt-2 w-72 max-w-[calc(100vw-24px)] rounded-2xl bg-surface-container-lowest shadow-2xl border border-outline-variant/30 p-3 z-50 animate-in fade-in duration-150">
                     <div className="p-3 rounded-xl bg-surface-container border border-outline-variant/20 space-y-1 mb-2">
                       <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-lg bg-secondary text-on-secondary font-bold text-xs flex items-center justify-center uppercase">
+                        <div className={`w-8 h-8 rounded-lg ${user.role === 'superadmin' || user.isPrimarySuperAdmin ? 'bg-indigo-600 text-white' : 'bg-secondary text-on-secondary'} font-bold text-xs flex items-center justify-center uppercase`}>
                           {user.name.charAt(0)}
                         </div>
                         <div className="min-w-0">
@@ -680,8 +679,12 @@ export const Header: React.FC<HeaderProps> = ({
                         </div>
                       </div>
                       <div className="flex items-center gap-1.5 pt-1">
-                        <span className="px-2 py-0.5 rounded-md bg-secondary/15 text-secondary text-[10px] font-bold uppercase">
-                          Role: {user.role}
+                        <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold uppercase ${
+                          user.role === 'superadmin' || user.isPrimarySuperAdmin
+                            ? 'bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/30'
+                            : 'bg-secondary/15 text-secondary'
+                        }`}>
+                          Role: {user.role === 'superadmin' || user.isPrimarySuperAdmin ? 'Primary Super Admin 🛡️' : user.role}
                         </span>
                         {user.staffOrStudentId && (
                           <span className="px-2 py-0.5 rounded-md bg-surface-container-highest text-on-surface-variant text-[10px] font-mono">
@@ -748,17 +751,29 @@ export const Header: React.FC<HeaderProps> = ({
                         <span className="material-symbols-outlined text-[16px] text-amber-600">account_balance_wallet</span>
                         <span>Faculty & Research Grants</span>
                       </button>
-                      {user.role === 'admin' && (
-                        <button
-                          onClick={() => {
-                            onTabChange('admin');
-                            setShowUserMenu(false);
-                          }}
-                          className="w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold text-on-surface hover:bg-surface-container transition-colors cursor-pointer text-left"
-                        >
-                          <span className="material-symbols-outlined text-[16px] text-rose-600">admin_panel_settings</span>
-                          <span>Registrar & Admin Desk</span>
-                        </button>
+                      {(user.role === 'admin' || user.role === 'superadmin' || user.isPrimarySuperAdmin) && (
+                        <>
+                          <button
+                            onClick={() => {
+                              onTabChange('admin');
+                              setShowUserMenu(false);
+                            }}
+                            className="w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold text-on-surface hover:bg-surface-container transition-colors cursor-pointer text-left"
+                          >
+                            <span className="material-symbols-outlined text-[16px] text-rose-600">admin_panel_settings</span>
+                            <span>Registrar & Admin Desk</span>
+                          </button>
+                          <button
+                            onClick={() => {
+                              onTabChange('rbac_admin');
+                              setShowUserMenu(false);
+                            }}
+                            className="w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-500/10 hover:bg-indigo-500/20 transition-colors cursor-pointer text-left border border-indigo-500/20"
+                          >
+                            <span className="material-symbols-outlined text-[16px] text-indigo-500">shield</span>
+                            <span>Enterprise RBAC & Permissions</span>
+                          </button>
+                        </>
                       )}
                     </div>
 

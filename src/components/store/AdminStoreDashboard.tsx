@@ -46,42 +46,49 @@ export const AdminStoreDashboard: React.FC<AdminStoreDashboardProps> = ({
   const [couponDiscount, setCouponDiscount] = useState<number>(15);
   const [couponType, setCouponType] = useState<'PERCENTAGE' | 'FIXED_ETB'>('PERCENTAGE');
 
+  const safeFetch = async (url: string) => {
+    try {
+      const res = await fetch(url);
+      if (!res.ok) return { success: false };
+      const ct = res.headers.get('content-type');
+      if (ct && ct.includes('application/json')) {
+        return await res.json();
+      }
+      return { success: false };
+    } catch {
+      return { success: false };
+    }
+  };
+
   const loadData = async () => {
     setIsLoading(true);
     try {
       // Products
-      const pRes = await fetch('/api/store/products?all=true');
-      const pData = await pRes.json();
+      const pData = await safeFetch('/api/store/products?all=true');
       if (pData.success) setProducts(pData.products || []);
 
       // Orders
-      const oRes = await fetch('/api/store/admin/orders');
-      const oData = await oRes.json();
+      const oData = await safeFetch('/api/store/admin/orders');
       if (oData.success) setOrders(oData.orders || []);
 
       // Settings
-      const sRes = await fetch('/api/store/settings');
-      const sData = await sRes.json();
+      const sData = await safeFetch('/api/store/settings');
       if (sData.success) setSettings(sData.settings || null);
 
       // Coupons
-      const cRes = await fetch('/api/store/admin/coupons');
-      const cData = await cRes.json();
+      const cData = await safeFetch('/api/store/admin/coupons');
       if (cData.success) setCoupons(cData.coupons || []);
 
       // Permissions
-      const permRes = await fetch('/api/store/admin/permissions');
-      const permData = await permRes.json();
+      const permData = await safeFetch('/api/store/admin/permissions');
       if (permData.success) setPermissions(permData.permissions || []);
 
       // Analytics
-      const aRes = await fetch('/api/store/admin/analytics');
-      const aData = await aRes.json();
+      const aData = await safeFetch('/api/store/admin/analytics');
       if (aData.success) setAnalytics(aData);
 
       // Audit Logs
-      const auditRes = await fetch('/api/store/admin/audit-logs');
-      const auditData = await auditRes.json();
+      const auditData = await safeFetch('/api/store/admin/audit-logs');
       if (auditData.success) setAuditLogs(auditData.logs || []);
     } catch (err) {
       console.error('Error loading admin store data:', err);

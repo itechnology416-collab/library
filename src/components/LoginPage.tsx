@@ -33,11 +33,12 @@ export const LoginPage: React.FC<LoginPageProps> = ({
 
   // Quick Seed Credentials
   const seedAccounts = [
+    { label: 'Primary Super Admin', email: 'superadmin@wki.edu.et', pass: 'SuperAdminPass2026!', icon: 'shield_person', role: 'superadmin' },
+    { label: 'Press Registrar / Admin', email: 'admin@wki.edu.et', pass: 'AdminPass123!', icon: 'admin_panel_settings', role: 'admin' },
     { label: 'Author / Client', email: 'author@wki.edu.et', pass: 'AuthorPass123!', icon: 'assignment', role: 'author' },
     { label: 'Postgraduate Scholar', email: 'scholar@wki.edu.et', pass: 'ScholarPass123!', icon: 'school', role: 'scholar' },
     { label: 'Peer Reviewer', email: 'reviewer@wki.edu.et', pass: 'ReviewerPass123!', icon: 'rate_review', role: 'reviewer' },
     { label: 'Faculty PI / Researcher', email: 'faculty@wki.edu.et', pass: 'FacultyPass123!', icon: 'account_balance_wallet', role: 'faculty' },
-    { label: 'Press Registrar / Admin', email: 'admin@wki.edu.et', pass: 'AdminPass123!', icon: 'admin_panel_settings', role: 'admin' },
   ];
 
   const handleSelectSeed = (item: { email: string; pass: string }) => {

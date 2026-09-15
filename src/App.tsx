@@ -73,6 +73,7 @@ import { ComputerTrainingPage } from './components/ComputerTrainingPage';
 import { InstitutionalRepositoryPortal } from './components/InstitutionalRepositoryPortal';
 import { ResearchEthicsIntelligencePortal } from './components/ResearchEthicsIntelligencePortal';
 import { TechTransferExtensionHub } from './components/TechTransferExtensionHub';
+import { EnterpriseRBACDashboard } from './components/admin/EnterpriseRBACDashboard';
 import { DigitalStorePage } from './components/store/DigitalStorePage';
 import { OfflineIndicator } from './components/pwa/OfflineIndicator';
 import { useAuth } from './context/AuthContext';
@@ -742,6 +743,25 @@ export default function App() {
                   showToast(`Course archived.`);
                 }}
                 onOpenBookPreview={(book) => setActivePreviewBook(book)}
+                onShowToast={showToast}
+              />
+            </div>
+          </ProtectedRoute>
+        )}
+
+        {/* TAB: ENTERPRISE HIERARCHICAL RBAC & PERMISSION CENTER */}
+        {(activeTab === 'rbac_admin' || activeTab === 'rbac' || activeTab === 'permissions_admin') && (
+          <ProtectedRoute
+            currentLanguage={currentLanguage}
+            routeName="Enterprise RBAC & Permission Center"
+            allowedRoles={['admin', 'superadmin']}
+            requiredPermission="admins.view"
+            onNavigateHome={() => setActiveTab('home')}
+            onLoginSuccess={() => setActiveTab('rbac_admin')}
+          >
+            <div className="pt-2">
+              <EnterpriseRBACDashboard
+                onNavigateHome={() => setActiveTab('home')}
                 onShowToast={showToast}
               />
             </div>

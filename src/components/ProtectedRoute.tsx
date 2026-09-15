@@ -8,6 +8,7 @@ interface ProtectedRouteProps {
   currentLanguage: Language;
   routeName: string;
   allowedRoles?: UserRole[];
+  requiredPermission?: string;
   onLoginSuccess?: () => void;
   onNavigateHome?: () => void;
 }
@@ -17,10 +18,11 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   currentLanguage,
   routeName,
   allowedRoles,
+  requiredPermission,
   onLoginSuccess,
   onNavigateHome,
 }) => {
-  const { isAuthenticated, isLoading, user, setIntendedRoute } = useAuth();
+  const { isAuthenticated, isLoading, user, setIntendedRoute, hasPermission } = useAuth();
 
   useEffect(() => {
     if (!isAuthenticated && !isLoading) {
@@ -62,8 +64,12 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     );
   }
 
-  // Check role authorization if specified
-  if (allowedRoles && user && !allowedRoles.includes(user.role)) {
+  // Check permission or role authorization if specified
+  const isSuperAdminOrPrimary = user?.role === 'superadmin' || user?.isPrimarySuperAdmin;
+  const isRoleAllowed = !allowedRoles || (user && (allowedRoles.includes(user.role) || isSuperAdminOrPrimary));
+  const isPermAllowed = !requiredPermission || (requiredPermission && hasPermission(requiredPermission));
+
+  if (!isRoleAllowed || !isPermAllowed) {
     return (
       <div className="max-w-2xl mx-auto py-12 px-gutter-mobile text-center space-y-4">
         <div className="w-16 h-16 rounded-3xl bg-rose-500/15 border border-rose-500/30 text-rose-600 mx-auto flex items-center justify-center">
@@ -73,7 +79,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
           Restricted Workspace Clearance
         </h2>
         <p className="text-xs sm:text-sm text-on-surface-variant max-w-md mx-auto leading-relaxed">
-          Your current authenticated profile (<strong>{user.name}</strong> • Role: <strong>{user.role}</strong>) does not have clearance for this dashboard.
+          Your current authenticated profile (<strong>{user?.name}</strong> • Role: <strong>{user?.role}</strong>) does not have required clearance or permissions for this workspace.
         </p>
         <div className="pt-4 flex items-center justify-center gap-3">
           {onNavigateHome && (
