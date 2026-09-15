@@ -521,13 +521,13 @@ export const UploadedLandingPage: React.FC<UploadedLandingPageProps> = ({
 
           {/* Right: Transparent Glowing Information Card with Animated Rotating Perimeter Beam */}
           <div className="lg:col-span-5 w-full">
-            <div className="relative rounded-2xl p-[1.5px] animated-border-beam shadow-[0_0_35px_rgba(245,158,11,0.18)] dark:shadow-[0_0_40px_rgba(245,158,11,0.15)] group">
+            <div className="relative rounded-2xl p-[1.5px] animated-border-beam shadow-[0_0_35px_rgba(245,158,11,0.18)] dark:shadow-[0_0_40px_rgba(245,158,11,0.15)] [html[data-theme='netflix']_&]:shadow-[0_0_50px_rgba(229,9,20,0.3)] transition-all duration-300 hover:scale-[1.01] group">
               {/* Inner Translucent Glass Card (Background video is visible through it!) */}
-              <div className="relative rounded-2xl bg-white/80 dark:bg-black/55 backdrop-blur-xl border border-white/40 dark:border-white/10 p-5 sm:p-6 text-on-surface space-y-4">
+              <div className="relative rounded-2xl bg-white/80 dark:bg-black/55 backdrop-blur-xl border border-white/40 dark:border-white/10 [html[data-theme='netflix']_&]:bg-black/60 [html[data-theme='netflix']_&]:border-red-500/20 p-5 sm:p-6 text-on-surface space-y-4">
                 {/* Header with Live Beacon */}
                 <div className="flex items-center justify-between gap-2 border-b border-outline-variant/20 pb-3">
                   <div className="flex items-center gap-2">
-                    <span className="p-1.5 rounded-lg bg-amber-500/20 text-amber-600 dark:text-amber-400">
+                    <span className="p-1.5 rounded-lg bg-amber-500/20 [html[data-theme='netflix']_&]:bg-red-500/20 text-amber-600 dark:text-amber-400 [html[data-theme='netflix']_&]:text-red-500">
                       <span className="material-symbols-outlined text-[18px]">verified_user</span>
                     </span>
                     <div>
@@ -543,16 +543,29 @@ export const UploadedLandingPage: React.FC<UploadedLandingPageProps> = ({
                   </span>
                 </div>
 
+                {/* Phishing Detecting & Institutional Telemetry Banner */}
+                <div className="p-3 rounded-xl bg-surface-container/80 dark:bg-white/[0.04] [html[data-theme='netflix']_&]:bg-red-950/20 border border-outline-variant/25 [html[data-theme='netflix']_&]:border-red-500/30">
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <span className="w-5 h-5 rounded-md bg-blue-500/20 [html[data-theme='netflix']_&]:bg-red-500/20 text-blue-600 dark:text-blue-400 [html[data-theme='netflix']_&]:text-red-400 flex items-center justify-center shrink-0">
+                      <span className="material-symbols-outlined text-[13px]">security</span>
+                    </span>
+                    <h4 className="text-xs font-bold text-on-surface">Phishing Detecting & More Informations:</h4>
+                  </div>
+                  <p className="text-[11px] text-on-surface-variant leading-relaxed">
+                    Empowering Ethiopian universities, research centers, and public institutions with real-time AI phishing detection, SIEM telemetry, and automated SOC incident response playbooks.
+                  </p>
+                </div>
+
                 {/* Cyber & Academic Telemetry Blocks */}
-                <div className="space-y-2.5">
+                <div className="space-y-2">
                   {/* Item 1: Threat & Phishing Detection */}
-                  <div className="p-3 rounded-xl bg-surface-container/70 dark:bg-white/[0.04] border border-outline-variant/25 flex items-center justify-between gap-3">
+                  <div className="p-2.5 rounded-xl bg-surface-container/70 dark:bg-white/[0.03] border border-outline-variant/25 flex items-center justify-between gap-3">
                     <div className="flex items-center gap-2.5 min-w-0">
-                      <span className="w-7 h-7 rounded-lg bg-blue-500/15 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+                      <span className="w-7 h-7 rounded-lg bg-blue-500/15 [html[data-theme='netflix']_&]:bg-red-500/15 text-blue-600 dark:text-blue-400 [html[data-theme='netflix']_&]:text-red-400 flex items-center justify-center shrink-0">
                         <span className="material-symbols-outlined text-[16px]">shield</span>
                       </span>
                       <div className="min-w-0">
-                        <div className="text-xs font-bold text-on-surface truncate">Phishing & Link Threat Shield</div>
+                        <div className="text-xs font-bold text-on-surface truncate">Phishing & Threat Shield</div>
                         <div className="text-[10px] text-on-surface-variant truncate font-mono">0 Vulnerabilities • SSL/SGS Active</div>
                       </div>
                     </div>
@@ -562,9 +575,9 @@ export const UploadedLandingPage: React.FC<UploadedLandingPageProps> = ({
                   </div>
 
                   {/* Item 2: Plagiarism & Originality Radar */}
-                  <div className="p-3 rounded-xl bg-surface-container/70 dark:bg-white/[0.04] border border-outline-variant/25 flex items-center justify-between gap-3">
+                  <div className="p-2.5 rounded-xl bg-surface-container/70 dark:bg-white/[0.03] border border-outline-variant/25 flex items-center justify-between gap-3">
                     <div className="flex items-center gap-2.5 min-w-0">
-                      <span className="w-7 h-7 rounded-lg bg-amber-500/15 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+                      <span className="w-7 h-7 rounded-lg bg-amber-500/15 [html[data-theme='netflix']_&]:bg-red-500/15 text-amber-600 dark:text-amber-400 [html[data-theme='netflix']_&]:text-red-400 flex items-center justify-center shrink-0">
                         <span className="material-symbols-outlined text-[16px]">policy</span>
                       </span>
                       <div className="min-w-0">
@@ -572,15 +585,15 @@ export const UploadedLandingPage: React.FC<UploadedLandingPageProps> = ({
                         <div className="text-[10px] text-on-surface-variant truncate font-mono">99.4% Originality • Pre-Check Ready</div>
                       </div>
                     </div>
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-600 dark:text-amber-300 font-bold shrink-0">
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/20 [html[data-theme='netflix']_&]:bg-red-500/20 text-amber-600 dark:text-amber-300 [html[data-theme='netflix']_&]:text-red-300 font-bold shrink-0">
                       PASSED
                     </span>
                   </div>
 
                   {/* Item 3: Doctoral Defense Studio */}
-                  <div className="p-3 rounded-xl bg-surface-container/70 dark:bg-white/[0.04] border border-outline-variant/25 flex items-center justify-between gap-3">
+                  <div className="p-2.5 rounded-xl bg-surface-container/70 dark:bg-white/[0.03] border border-outline-variant/25 flex items-center justify-between gap-3">
                     <div className="flex items-center gap-2.5 min-w-0">
-                      <span className="w-7 h-7 rounded-lg bg-purple-500/15 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0">
+                      <span className="w-7 h-7 rounded-lg bg-purple-500/15 [html[data-theme='netflix']_&]:bg-red-500/15 text-purple-600 dark:text-purple-400 [html[data-theme='netflix']_&]:text-red-400 flex items-center justify-center shrink-0">
                         <span className="material-symbols-outlined text-[16px]">slideshow</span>
                       </span>
                       <div className="min-w-0">
@@ -588,7 +601,7 @@ export const UploadedLandingPage: React.FC<UploadedLandingPageProps> = ({
                         <div className="text-[10px] text-on-surface-variant truncate font-mono">16:9 Widescreen • LaTeX Synced</div>
                       </div>
                     </div>
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-500/20 text-purple-600 dark:text-purple-300 font-bold shrink-0">
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-500/20 [html[data-theme='netflix']_&]:bg-red-500/20 text-purple-600 dark:text-purple-300 [html[data-theme='netflix']_&]:text-red-300 font-bold shrink-0">
                       READY
                     </span>
                   </div>
@@ -598,7 +611,7 @@ export const UploadedLandingPage: React.FC<UploadedLandingPageProps> = ({
                 <div className="pt-2 border-t border-outline-variant/20 flex items-center gap-2">
                   <button
                     onClick={onOpenDiagnostic}
-                    className="flex-1 py-2.5 px-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
+                    className="flex-1 py-2.5 px-3 rounded-xl bg-amber-500 hover:bg-amber-400 [html[data-theme='netflix']_&]:bg-[#e50914] [html[data-theme='netflix']_&]:hover:bg-[#ff1e27] text-slate-950 [html[data-theme='netflix']_&]:text-white font-bold text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-xs [html[data-theme='netflix']_&]:shadow-[0_0_20px_rgba(229,9,20,0.4)]"
                   >
                     <span className="material-symbols-outlined text-[15px]">spellcheck</span>
                     <span>Audit Manuscript</span>
@@ -607,7 +620,7 @@ export const UploadedLandingPage: React.FC<UploadedLandingPageProps> = ({
                     onClick={onOpenPlagiarism}
                     className="flex-1 py-2.5 px-3 rounded-xl bg-surface-container hover:bg-surface-container-high dark:bg-white/[0.08] dark:hover:bg-white/[0.12] text-on-surface font-semibold text-xs transition-all border border-outline-variant/30 flex items-center justify-center gap-1.5 cursor-pointer"
                   >
-                    <span className="material-symbols-outlined text-[15px] text-amber-500">qr_code_scanner</span>
+                    <span className="material-symbols-outlined text-[15px] text-amber-500 [html[data-theme='netflix']_&]:text-red-500">qr_code_scanner</span>
                     <span>Scan Plagiarism</span>
                   </button>
                 </div>

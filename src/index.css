@@ -95,6 +95,42 @@
     --color-on-primary-container: #f4f4f5;
   }
 
+  /* 🎬 NETFLIX MODE — CINEMATIC STREAMING & CYBERSECURITY PALETTE */
+  .theme-netflix,
+  [data-theme="netflix"] {
+    --color-surface: #050505;
+    --color-surface-dim: #020202;
+    --color-surface-bright: #121212;
+    --color-surface-container-lowest: #0a0a0a;
+    --color-surface-container-low: #0f0f0f;
+    --color-surface-container: #141414;
+    --color-surface-container-high: #1c1c1c;
+    --color-surface-container-highest: #242424;
+    --color-surface-variant: #181818;
+    --color-on-surface: #ffffff;
+    --color-on-surface-variant: #b3b3b3;
+    --color-outline: #444444;
+    --color-outline-variant: rgba(255, 255, 255, 0.10);
+
+    /* Netflix Crimson Accent */
+    --color-secondary: #e50914;
+    --color-on-secondary: #ffffff;
+    --color-secondary-container: #b81d24;
+    --color-on-secondary-container: #ffffff;
+    --color-secondary-fixed: #ff4d58;
+    --color-secondary-fixed-dim: #e50914;
+    --color-on-secondary-fixed: #ffffff;
+    --color-on-secondary-fixed-variant: #ffebee;
+
+    --color-primary: #ffffff;
+    --color-on-primary: #050505;
+    --color-primary-container: #141414;
+    --color-on-primary-container: #ffffff;
+
+    --netflix-accent: #e50914;
+    --netflix-accent-glow: rgba(229, 9, 20, 0.45);
+  }
+
   .pb-safe {
     padding-bottom: env(safe-area-inset-bottom, 0px);
   }
@@ -148,8 +184,33 @@
   pointer-events: none;
 }
 
+/* Red Beam for Netflix Mode */
+.theme-netflix .animated-border-beam::before,
+[data-theme="netflix"] .animated-border-beam::before {
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    transparent 40deg,
+    rgba(229, 9, 20, 0.98) 110deg,
+    rgba(255, 77, 88, 0.98) 180deg,
+    rgba(184, 29, 36, 0.9) 240deg,
+    transparent 300deg,
+    transparent 360deg
+  );
+  filter: drop-shadow(0 0 16px rgba(229, 9, 20, 0.8));
+}
+
 .radar-glow {
   animation: pulse-radar 3s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animated-border-beam::before {
+    animation: none !important;
+  }
+  .radar-glow {
+    animation: none !important;
+  }
 }
 
 /* Custom typography classes matching the spec */

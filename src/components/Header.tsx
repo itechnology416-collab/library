@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Language } from '../types';
+import React, { useState, useEffect } from 'react';
+import { Language, ThemeMode } from '../types';
 import { OFFICIAL_BRAND } from '../data/initialData';
 import { translations } from '../utils/translations';
 import { useAuth } from '../context/AuthContext';
@@ -28,6 +28,8 @@ interface HeaderProps {
   onOpenJournalWorkflow?: () => void;
   darkMode: boolean;
   onToggleDarkMode: () => void;
+  theme?: ThemeMode;
+  onThemeChange?: (theme: ThemeMode) => void;
   pendingRequestsCount: number;
 }
 
@@ -55,15 +57,36 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenJournalWorkflow,
   darkMode,
   onToggleDarkMode,
+  theme,
+  onThemeChange,
   pendingRequestsCount,
 }) => {
   const { user, isAuthenticated, logout } = useAuth();
   const [showLangMenu, setShowLangMenu] = useState(false);
+  const [showThemeMenu, setShowThemeMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  // Derive current theme mode
+  const currentTheme: ThemeMode = theme || (darkMode ? 'dark' : 'light');
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 15);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const t = translations[currentLanguage];
+
+  const themeOptions: { id: ThemeMode; label: string; icon: string; desc: string; color: string }[] = [
+    { id: 'light', label: 'Light Mode', icon: 'light_mode', desc: 'Clean institutional light palette', color: 'text-amber-500' },
+    { id: 'dark', label: 'Black Mode', icon: 'dark_mode', desc: 'Deep cinematic black & gold', color: 'text-slate-300' },
+    { id: 'netflix', label: 'Netflix Mode', icon: 'movie', desc: 'Cinematic streaming & red glow', color: 'text-red-500' },
+  ];
 
   const languages: { code: Language; label: string; flag: string }[] = [
     { code: 'en', label: 'English', flag: 'EN' },
@@ -176,7 +199,15 @@ export const Header: React.FC<HeaderProps> = ({
       {/* ========================================================================= */}
       {/* 2. MAIN NAVIGATION & ACTION BAR (h-14 / 56px)                              */}
       {/* ========================================================================= */}
-      <div className="w-full bg-surface/90 dark:bg-[#050505]/90 backdrop-blur-xl border-b border-outline-variant/20 dark:border-white/10 shadow-[0_2px_10px_rgba(0,0,0,0.04)] dark:shadow-[0_4px_25px_rgba(0,0,0,0.5)] relative z-50">
+      <div
+        className={`w-full transition-all duration-300 relative z-50 ${
+          currentTheme === 'netflix'
+            ? isScrolled
+              ? 'bg-[#050505]/95 backdrop-blur-xl border-b border-white/10 shadow-[0_6px_30px_rgba(0,0,0,0.85)]'
+              : 'bg-black/65 backdrop-blur-md border-b border-white/10'
+            : 'bg-surface/90 dark:bg-[#050505]/90 backdrop-blur-xl border-b border-outline-variant/20 dark:border-white/10 shadow-[0_2px_10px_rgba(0,0,0,0.04)] dark:shadow-[0_4px_25px_rgba(0,0,0,0.5)]'
+        }`}
+      >
         <div className="h-14 px-3 sm:px-4 md:px-6 flex items-center justify-between gap-2 sm:gap-3 lg:gap-4 w-full">
           {/* 1. Left: Single Clean Brand */}
           <div
@@ -441,17 +472,80 @@ export const Header: React.FC<HeaderProps> = ({
               )}
             </div>
 
-            {/* Dark Mode Toggle */}
-            <button
-              aria-label="Toggle Dark Mode"
-              onClick={onToggleDarkMode}
-              className="w-8 h-8 sm:w-8.5 sm:h-8.5 rounded-lg flex items-center justify-center text-on-surface hover:bg-surface-container transition-colors cursor-pointer shrink-0"
-              title={darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-            >
-              <span className="material-symbols-outlined text-[16px] sm:text-[18px]">
-                {darkMode ? 'light_mode' : 'dark_mode'}
-              </span>
-            </button>
+            {/* Theme Selector (Light / Black / Netflix) */}
+            <div className="relative shrink-0">
+              <button
+                aria-label="Theme Mode Selector"
+                onClick={() => {
+                  setShowThemeMenu(!showThemeMenu);
+                  setShowLangMenu(false);
+                  setShowNotifications(false);
+                  setShowUserMenu(false);
+                }}
+                className={`h-8 sm:h-8.5 px-2 sm:px-2.5 rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer border shrink-0 ${
+                  currentTheme === 'netflix'
+                    ? 'bg-black/70 text-red-500 border-red-500/50 hover:bg-black/90 shadow-[0_0_12px_rgba(229,9,20,0.35)]'
+                    : currentTheme === 'dark'
+                    ? 'bg-surface-container text-amber-400 hover:bg-surface-container-high border-outline-variant/30'
+                    : 'bg-surface-container text-amber-600 hover:bg-surface-container-high border-outline-variant/20'
+                }`}
+                title={`Theme: ${currentTheme.toUpperCase()} (Click to change)`}
+              >
+                <span className="material-symbols-outlined text-[15px] sm:text-[17px]">
+                  {currentTheme === 'netflix' ? 'movie' : currentTheme === 'dark' ? 'dark_mode' : 'light_mode'}
+                </span>
+                <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider hidden xs:inline">
+                  {currentTheme === 'netflix' ? 'Netflix' : currentTheme === 'dark' ? 'Black' : 'Light'}
+                </span>
+                <span className="material-symbols-outlined text-[12px] opacity-70">expand_more</span>
+              </button>
+
+              {showThemeMenu && (
+                <div
+                  className="absolute right-0 mt-2 w-56 max-w-[calc(100vw-24px)] rounded-xl bg-surface-container-lowest dark:bg-[#0f0f0f] shadow-2xl border border-outline-variant/30 dark:border-white/15 p-1.5 z-50 animate-in fade-in duration-100"
+                  dir="ltr"
+                >
+                  <div className="px-2 py-1 text-[10px] font-bold text-secondary uppercase tracking-wider">
+                    Select Theme Mode
+                  </div>
+                  {themeOptions.map((opt) => (
+                    <button
+                      key={opt.id}
+                      onClick={() => {
+                        if (onThemeChange) {
+                          onThemeChange(opt.id);
+                        } else if (onToggleDarkMode) {
+                          onToggleDarkMode();
+                        }
+                        setShowThemeMenu(false);
+                      }}
+                      className={`w-full flex items-center justify-between px-3 py-2 text-left rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                        currentTheme === opt.id
+                          ? opt.id === 'netflix'
+                            ? 'bg-red-500/15 text-red-500 font-bold border border-red-500/30'
+                            : 'bg-surface-container text-secondary font-bold'
+                          : 'text-on-surface hover:bg-surface-container'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <span className={`material-symbols-outlined text-[16px] ${opt.color}`}>
+                          {opt.icon}
+                        </span>
+                        <div>
+                          <div className="leading-tight font-bold">{opt.label}</div>
+                          <div className="text-[10px] opacity-60 font-normal leading-tight">{opt.desc}</div>
+                        </div>
+                      </div>
+                      {currentTheme === opt.id && (
+                        <span className="material-symbols-outlined text-[14px] text-secondary">
+                          check
+                        </span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
 
             {/* Global Search Button */}
             <button
@@ -750,6 +844,38 @@ export const Header: React.FC<HeaderProps> = ({
                 </button>
               </>
             )}
+          </div>
+
+          {/* Mobile Theme Selector Strip */}
+          <div className="mb-3 p-2 rounded-2xl bg-surface-container/60 border border-outline-variant/20 flex items-center justify-between gap-1.5">
+            <span className="text-[11px] font-bold text-on-surface px-2 flex items-center gap-1.5">
+              <span className="material-symbols-outlined text-[15px] text-secondary">palette</span>
+              <span>Theme:</span>
+            </span>
+            <div className="flex items-center gap-1">
+              {themeOptions.map((opt) => (
+                <button
+                  key={opt.id}
+                  onClick={() => {
+                    if (onThemeChange) {
+                      onThemeChange(opt.id);
+                    } else if (onToggleDarkMode) {
+                      onToggleDarkMode();
+                    }
+                  }}
+                  className={`px-2.5 py-1 rounded-xl text-xs font-bold flex items-center gap-1 transition-all cursor-pointer ${
+                    currentTheme === opt.id
+                      ? opt.id === 'netflix'
+                        ? 'bg-red-600 text-white shadow-sm'
+                        : 'bg-secondary text-on-secondary shadow-xs'
+                      : 'bg-surface-container text-on-surface hover:bg-surface-container-high'
+                  }`}
+                >
+                  <span className="material-symbols-outlined text-[14px]">{opt.icon}</span>
+                  <span>{opt.id === 'netflix' ? 'Netflix' : opt.id === 'dark' ? 'Black' : 'Light'}</span>
+                </button>
+              ))}
+            </div>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">

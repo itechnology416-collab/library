@@ -1,4 +1,5 @@
 export type Language = 'en' | 'or' | 'am' | 'ar';
+export type ThemeMode = 'light' | 'dark' | 'netflix';
 
 export type ServiceCategory =
   | 'ppt'

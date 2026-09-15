@@ -7,6 +7,7 @@ import {
   RequestStatus,
   ServiceCategory,
   ServiceRequest,
+  ThemeMode,
 } from './types';
 import {
   INITIAL_BOOKS,
@@ -81,11 +82,15 @@ export default function App() {
     const hash = window.location.hash.replace('#', '');
     return hash || 'home';
   });
-  const [darkMode, setDarkMode] = useState<boolean>(() => {
-    const saved = localStorage.getItem('wirtuu_theme');
-    if (saved) return saved === 'dark';
-    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const [theme, setTheme] = useState<ThemeMode>(() => {
+    const saved = localStorage.getItem('wirtuu_theme') as ThemeMode | null;
+    if (saved === 'light' || saved === 'dark' || saved === 'netflix') return saved;
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+      ? 'dark'
+      : 'light';
   });
+
+  const darkMode = theme === 'dark' || theme === 'netflix';
 
   // Sync activeTab with URL hash for persistent navigation and direct URL access
   useEffect(() => {
@@ -158,16 +163,24 @@ export default function App() {
     }, 3500);
   };
 
-  // Sync dark mode class with root html and localStorage
+  // Sync theme class and attribute with root html and localStorage
   useEffect(() => {
-    if (darkMode) {
+    document.documentElement.classList.remove('dark', 'theme-netflix');
+    document.documentElement.removeAttribute('data-theme');
+
+    if (theme === 'netflix') {
+      document.documentElement.classList.add('dark', 'theme-netflix');
+      document.documentElement.setAttribute('data-theme', 'netflix');
+      localStorage.setItem('wirtuu_theme', 'netflix');
+    } else if (theme === 'dark') {
       document.documentElement.classList.add('dark');
+      document.documentElement.setAttribute('data-theme', 'dark');
       localStorage.setItem('wirtuu_theme', 'dark');
     } else {
-      document.documentElement.classList.remove('dark');
+      document.documentElement.setAttribute('data-theme', 'light');
       localStorage.setItem('wirtuu_theme', 'light');
     }
-  }, [darkMode]);
+  }, [theme]);
 
   // Sync RTL direction when language changes to Arabic
   useEffect(() => {
@@ -375,7 +388,11 @@ export default function App() {
         }}
         onOpenJournalWorkflow={() => setShowJournalWorkflowModal(true)}
         darkMode={darkMode}
-        onToggleDarkMode={() => setDarkMode(!darkMode)}
+        onToggleDarkMode={() => {
+          setTheme((prev) => (prev === 'light' ? 'dark' : prev === 'dark' ? 'netflix' : 'light'));
+        }}
+        theme={theme}
+        onThemeChange={setTheme}
         pendingRequestsCount={requests.filter((r) => r.status === 'Submitted').length}
       />
 
@@ -877,7 +894,9 @@ export default function App() {
           onOpenJournalWorkflow={() => setShowJournalWorkflowModal(true)}
           onOpenVerify={() => setShowVerifyModal(true)}
           onRequestService={() => handleOpenRequestModal('ppt', 25)}
-          onToggleDarkMode={() => setDarkMode((prev) => !prev)}
+          onToggleDarkMode={() =>
+            setTheme((prev) => (prev === 'light' ? 'dark' : prev === 'dark' ? 'netflix' : 'light'))
+          }
         />
       )}
 
