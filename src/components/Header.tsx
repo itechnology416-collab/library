@@ -3,6 +3,7 @@ import { Language, ThemeMode } from '../types';
 import { OFFICIAL_BRAND } from '../data/initialData';
 import { translations } from '../utils/translations';
 import { useAuth } from '../context/AuthContext';
+import { PWAInstallButton } from './pwa/PWAInstallButton';
 
 interface HeaderProps {
   currentLanguage: Language;
@@ -97,6 +98,7 @@ export const Header: React.FC<HeaderProps> = ({
 
   const navItems = [
     { id: 'home', label: t.homeNav || 'Home', icon: 'home' },
+    { id: 'store', label: 'Digital Store', icon: 'local_mall' },
     { id: 'dashboards', label: 'Dashboards Hub', icon: 'dashboard' },
     { id: 'computer_training', label: 'Computer Training', icon: 'computer' },
     { id: 'portal', label: 'Author Portal', icon: 'assignment' },
@@ -411,6 +413,9 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* 3. Right: Protected Action Controls (flex-shrink-0) */}
           <div className="flex items-center gap-1 sm:gap-1.5 xl:gap-2 flex-shrink-0 ml-auto lg:ml-0 relative">
+            {/* PWA App Install Button */}
+            <PWAInstallButton />
+
             {/* Quick Request Button (Desktop / Tablet) */}
             <button
               onClick={onRequestClick}

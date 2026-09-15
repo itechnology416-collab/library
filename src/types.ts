@@ -1260,6 +1260,309 @@ export interface IndustryLinkageMou {
   scopeSummary: string;
 }
 
+// =========================================================================
+// DIGITAL STORE / MARKETPLACE TYPES
+// =========================================================================
+
+export type StoreCategory =
+  | 'english_learning'
+  | 'cybersecurity'
+  | 'computer_training'
+  | 'presentation_templates'
+  | 'graphic_design'
+  | 'academic_research'
+  | 'audio_lessons'
+  | 'video_tutorials'
+  | 'ebooks_literature'
+  | 'religious_culture'
+  | 'graphic_templates'
+  | 'other';
+
+export type StoreProductType =
+  | 'Audio'
+  | 'Video'
+  | 'Book'
+  | 'Document'
+  | 'Graphics'
+  | 'Software / Template'
+  | 'Template'
+  | 'Bundle'
+  | 'Other';
+
+export type StoreFileFormat =
+  | 'PDF'
+  | 'DOCX'
+  | 'PPT'
+  | 'PPTX'
+  | 'MP3'
+  | 'WAV'
+  | 'MP4'
+  | 'WebM'
+  | 'EPUB'
+  | 'PSD'
+  | 'AI'
+  | 'EPS'
+  | 'SVG'
+  | 'PNG'
+  | 'ZIP';
+
+export type StoreProductStatus = 'published' | 'draft' | 'archived';
+
+export interface ProductVersion {
+  version: string;
+  releaseDate: string;
+  changelog: string;
+  fileSize: string;
+  fileName: string;
+}
+
+export interface ProductReview {
+  id: string;
+  productId: string;
+  userId: string;
+  userName: string;
+  userEmail: string;
+  userRole?: string;
+  rating: number; // 1 to 5
+  comment: string;
+  isVerifiedPurchase: boolean;
+  createdAt: string;
+  isApproved: boolean;
+}
+
+export interface StoreProduct {
+  id: string;
+  title: string;
+  titleLocalized?: {
+    en: string;
+    or?: string;
+    am?: string;
+    ar?: string;
+  };
+  description: string;
+  shortDescription?: string;
+  category: StoreCategory;
+  categoryLabel?: string;
+  subcategory?: string;
+  productType: StoreProductType;
+  fileFormat: StoreFileFormat;
+  thumbnailUrl: string;
+  fileUrl?: string;
+  previewType?: 'audio' | 'video' | 'pdf_pages' | 'slide_deck' | 'watermark_image' | 'image_gallery' | 'text';
+  previewUrl?: string;
+  previewData?: {
+    samplePages?: string[];
+    sampleAudioUrl?: string;
+    sampleVideoUrl?: string;
+    sampleSlides?: { slideNumber: number; title: string; content: string }[];
+    sampleText?: string;
+  };
+  fileSize: string;
+  fileName?: string;
+  version: string;
+  versionHistory?: ProductVersion[];
+  author: string;
+  authorAffiliation?: string;
+  language: 'English' | 'Afaan Oromoo' | 'Amharic' | 'Arabic' | 'Arabic / Afaan Oromoo' | 'Multilingual';
+  tags: string[];
+  priceETB: number; // In Ethiopian Birr
+  currency: 'ETB';
+  isFree: boolean;
+  discountPercentage?: number; // 0 to 100
+  originalPriceETB?: number;
+  status: StoreProductStatus;
+  uploadDate: string;
+  lastUpdated: string;
+  downloadCount: number;
+  purchaseCount: number;
+  rating: number; // e.g. 4.8
+  reviewCount: number;
+  reviews?: ProductReview[];
+  pagesOrDuration?: string; // e.g. '120 Pages' or '45 Mins Audio'
+  maxDownloadsAllowed?: number; // 0 or undefined for unlimited
+  downloadExpiryDays?: number; // 0 for lifetime
+  licenseType?: 'Standard Personal' | 'Academic Institutional' | 'Commercial Resell Prohibited' | 'Commercial Royalty-Free';
+  isFeatured?: boolean;
+  isBestSeller?: boolean;
+  isNewRelease?: boolean;
+}
+
+export interface StoreCartItem {
+  productId: string;
+  product: StoreProduct;
+  unitPriceETB: number;
+  addedAt: string;
+}
+
+export type StoreOrderStatus =
+  | 'PENDING_PAYMENT'
+  | 'PAYMENT_SUBMITTED'
+  | 'PAYMENT_UNDER_REVIEW'
+  | 'PAYMENT_APPROVED'
+  | 'PAYMENT_REJECTED'
+  | 'COMPLETED'
+  | 'CANCELLED'
+  | 'REFUNDED';
+
+export type StorePaymentProvider =
+  | 'CBE'
+  | 'Telebirr'
+  | 'Safaricom'
+  | 'Awash_Bank'
+  | 'Dashen_Bank'
+  | 'Free_Grant';
+
+export interface StoreOrderItem {
+  productId: string;
+  title: string;
+  productType: StoreProductType;
+  fileFormat: StoreFileFormat;
+  version: string;
+  unitPriceETB: number;
+  discountAmountETB: number;
+  finalPriceETB: number;
+  isFree: boolean;
+  thumbnailUrl: string;
+}
+
+export interface StorePaymentSubmission {
+  id: string;
+  orderId: string;
+  orderNumber: string;
+  customerUserId: string;
+  customerName: string;
+  customerEmail: string;
+  customerPhone: string;
+  paymentProvider: StorePaymentProvider;
+  amountETB: number;
+  currency: 'ETB';
+  transactionReference: string;
+  receiptUrl?: string;
+  receiptFileName?: string;
+  notes?: string;
+  submittedAt: string;
+  verifiedAt?: string;
+  verifiedBy?: string;
+  rejectionReason?: string;
+  status: 'pending' | 'approved' | 'rejected';
+}
+
+export interface StoreOrder {
+  id: string;
+  orderNumber: string; // e.g. ILL-2026-000125
+  customerUserId: string;
+  customerName: string;
+  customerEmail: string;
+  customerPhone?: string;
+  items: StoreOrderItem[];
+  subtotalETB: number;
+  discountETB: number;
+  couponCodeApplied?: string;
+  totalETB: number;
+  currency: 'ETB';
+  status: StoreOrderStatus;
+  paymentMethod?: StorePaymentProvider;
+  paymentSubmission?: StorePaymentSubmission;
+  isFreeOrder: boolean;
+  createdAt: string;
+  updatedAt: string;
+  adminNotes?: string;
+}
+
+export interface StoreDownloadPermission {
+  id: string;
+  userId: string;
+  userEmail: string;
+  orderId?: string;
+  orderNumber?: string;
+  productId: string;
+  productTitle: string;
+  productType: StoreProductType;
+  fileFormat: StoreFileFormat;
+  version: string;
+  grantedAt: string;
+  grantedBy: 'payment_verified' | 'free_product' | 'admin_scholarship';
+  adminGrantReason?: string;
+  expiresAt?: string; // ISO date or null for lifetime
+  maxDownloads: number; // 0 for unlimited
+  downloadCount: number;
+  lastDownloadedAt?: string;
+  isRevoked: boolean;
+  revokedReason?: string;
+}
+
+export interface StoreDownloadLog {
+  id: string;
+  permissionId: string;
+  userId: string;
+  productId: string;
+  orderId?: string;
+  downloadedAt: string;
+  ipAddress?: string;
+  userAgent?: string;
+  fileVersion: string;
+}
+
+export interface StoreCoupon {
+  id: string;
+  code: string; // uppercase, e.g. ILILLII20
+  discountType: 'percentage' | 'fixed_amount';
+  discountValue: number; // e.g. 20 for 20% or 50 for 50 ETB
+  minOrderAmountETB: number;
+  maxDiscountETB?: number;
+  startDate: string;
+  endDate: string;
+  usageLimit: number;
+  usageCount: number;
+  isActive: boolean;
+  applicableCategory?: StoreCategory | 'all';
+  description: string;
+}
+
+export interface StoreSettings {
+  storeName: string;
+  currency: string;
+  orderPrefix: string;
+  cbeAccountName: string;
+  cbeAccountNumber: string;
+  telebirrMerchantId: string;
+  telebirrMerchantPhone: string;
+  safaricomMpesaNumber: string;
+  safaricomAccountName: string;
+  awashAccountNumber?: string;
+  defaultMaxDownloads: number;
+  defaultDownloadExpiryDays: number;
+  supportPhone: string;
+  supportEmail: string;
+  supportTelegram: string;
+  noticeBanner?: string;
+  enableStore: boolean;
+}
+
+export interface StoreAuditLog {
+  id: string;
+  action:
+    | 'PRODUCT_CREATED'
+    | 'PRODUCT_UPDATED'
+    | 'PRODUCT_DELETED'
+    | 'FILE_REPLACED'
+    | 'PAYMENT_APPROVED'
+    | 'PAYMENT_REJECTED'
+    | 'FREE_ACCESS_GRANTED'
+    | 'ACCESS_REVOKED'
+    | 'COUPON_CREATED'
+    | 'SETTINGS_UPDATED';
+  performedByUserId: string;
+  performedByUserName: string;
+  performedByUserRole: string;
+  targetId: string;
+  targetName: string;
+  details: string;
+  timestamp: string;
+  ipAddress?: string;
+}
+
+
 
 
 

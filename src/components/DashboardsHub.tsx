@@ -3,7 +3,7 @@ import { Language } from '../types';
 
 interface DashboardsHubProps {
   currentLanguage: Language;
-  onSelectDashboard: (tab: 'portal' | 'student' | 'admin' | 'peer_review' | 'faculty' | 'repository' | 'irb' | 'tech_transfer') => void;
+  onSelectDashboard: (tab: 'portal' | 'student' | 'admin' | 'peer_review' | 'faculty' | 'repository' | 'irb' | 'tech_transfer' | 'store') => void;
   pendingRequestsCount: number;
   totalBooksCount: number;
   totalCoursesCount: number;
@@ -104,6 +104,17 @@ export const DashboardsHub: React.FC<DashboardsHubProps> = ({
       theme: 'from-emerald-950/20 via-teal-950/10 to-transparent hover:border-emerald-500/50',
       actionText: 'Open Tech Transfer & Extension Hub',
       buttonColor: 'bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold',
+    },
+    {
+      id: 'store' as const,
+      title: 'Digital Store & DRM Educational Marketplace',
+      subtitle: 'Official digital learning press: English books, audio masterclasses, SOC cybersecurity training, PowerPoint slide decks, graphic design templates, and DRM-protected student download library.',
+      icon: 'local_mall',
+      badge: 'Ilillii Digital Marketplace',
+      badgeColor: 'bg-primary/15 text-primary border-primary/30',
+      theme: 'from-blue-950/20 via-indigo-950/10 to-transparent hover:border-primary/50',
+      actionText: 'Open Digital Store',
+      buttonColor: 'bg-primary hover:opacity-90 text-white font-bold',
     },
   ];
 

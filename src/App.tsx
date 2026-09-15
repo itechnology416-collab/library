@@ -73,6 +73,8 @@ import { ComputerTrainingPage } from './components/ComputerTrainingPage';
 import { InstitutionalRepositoryPortal } from './components/InstitutionalRepositoryPortal';
 import { ResearchEthicsIntelligencePortal } from './components/ResearchEthicsIntelligencePortal';
 import { TechTransferExtensionHub } from './components/TechTransferExtensionHub';
+import { DigitalStorePage } from './components/store/DigitalStorePage';
+import { OfflineIndicator } from './components/pwa/OfflineIndicator';
 import { useAuth } from './context/AuthContext';
 
 export default function App() {
@@ -527,6 +529,13 @@ export default function App() {
                 }
               }}
             />
+          </div>
+        )}
+
+        {/* TAB: DIGITAL STORE / MARKETPLACE */}
+        {(activeTab === 'store' || activeTab === 'digital_store' || activeTab === 'marketplace') && (
+          <div className="pt-2">
+            <DigitalStorePage currentUser={user} onNavigate={setActiveTab} />
           </div>
         )}
 
@@ -1090,6 +1099,9 @@ export default function App() {
           }}
         />
       )}
+
+      {/* Offline Status PWA Indicator */}
+      <OfflineIndicator />
     </div>
   );
 }

@@ -34,6 +34,14 @@ import {
   INITIAL_DEMO_SITES,
   INITIAL_INDUSTRY_MOUS,
 } from './src/data/initialData';
+import {
+  INITIAL_STORE_SETTINGS,
+  INITIAL_STORE_COUPONS,
+  INITIAL_STORE_PRODUCTS,
+  INITIAL_STORE_ORDERS,
+  INITIAL_STORE_PERMISSIONS,
+  INITIAL_STORE_AUDIT_LOGS,
+} from './src/data/initialStoreData';
 
 const PORT = 3000;
 const JWT_SECRET = process.env.JWT_SECRET || 'academic_wki_jwt_secret_secure_key_2026';
@@ -70,6 +78,17 @@ const INCUBATION_STARTUPS_FILE = path.join(DATA_DIR, 'incubation_startups.json')
 const AGRO_ADVISORIES_FILE = path.join(DATA_DIR, 'agro_advisories.json');
 const DEMO_SITES_FILE = path.join(DATA_DIR, 'demo_sites.json');
 const INDUSTRY_MOUS_FILE = path.join(DATA_DIR, 'industry_mous.json');
+
+// Store Persistence Files
+const STORE_PRODUCTS_FILE = path.join(DATA_DIR, 'store_products.json');
+const STORE_ORDERS_FILE = path.join(DATA_DIR, 'store_orders.json');
+const STORE_PERMISSIONS_FILE = path.join(DATA_DIR, 'store_permissions.json');
+const STORE_COUPONS_FILE = path.join(DATA_DIR, 'store_coupons.json');
+const STORE_SETTINGS_FILE = path.join(DATA_DIR, 'store_settings.json');
+const STORE_AUDIT_FILE = path.join(DATA_DIR, 'store_audit.json');
+const STORE_REVIEWS_FILE = path.join(DATA_DIR, 'store_reviews.json');
+const STORE_DOWNLOAD_LOGS_FILE = path.join(DATA_DIR, 'store_download_logs.json');
+const STORE_PAYOUTS_FILE = path.join(DATA_DIR, 'store_payouts.json');
 
 export interface StoredUser {
   id: string;
@@ -711,6 +730,215 @@ function saveIndustryMous(mous: any[]) {
   }
 }
 
+// -------------------------------------------------------------
+// DIGITAL STORE / MARKETPLACE DATA LOADERS & PERSISTENCE
+// -------------------------------------------------------------
+function loadStoreProducts() {
+  try {
+    if (fs.existsSync(STORE_PRODUCTS_FILE)) {
+      const stored = JSON.parse(fs.readFileSync(STORE_PRODUCTS_FILE, 'utf-8'));
+      const existingIds = new Set(stored.map((p: any) => p.id));
+      let updated = false;
+      for (const item of INITIAL_STORE_PRODUCTS) {
+        if (!existingIds.has(item.id)) {
+          stored.unshift(item);
+          updated = true;
+        }
+      }
+      if (updated) {
+        saveStoreProducts(stored);
+      }
+      return stored;
+    }
+  } catch (err) {
+    console.error('Error loading store products:', err);
+  }
+  return INITIAL_STORE_PRODUCTS;
+}
+
+function saveStoreProducts(products: any[]) {
+  try {
+    fs.writeFileSync(STORE_PRODUCTS_FILE, JSON.stringify(products, null, 2), 'utf-8');
+  } catch (err) {
+    console.error('Error saving store products:', err);
+  }
+}
+
+function loadStoreOrders() {
+  try {
+    if (fs.existsSync(STORE_ORDERS_FILE)) {
+      return JSON.parse(fs.readFileSync(STORE_ORDERS_FILE, 'utf-8'));
+    }
+  } catch (err) {
+    console.error('Error loading store orders:', err);
+  }
+  return INITIAL_STORE_ORDERS;
+}
+
+function saveStoreOrders(orders: any[]) {
+  try {
+    fs.writeFileSync(STORE_ORDERS_FILE, JSON.stringify(orders, null, 2), 'utf-8');
+  } catch (err) {
+    console.error('Error saving store orders:', err);
+  }
+}
+
+function loadStorePermissions() {
+  try {
+    if (fs.existsSync(STORE_PERMISSIONS_FILE)) {
+      return JSON.parse(fs.readFileSync(STORE_PERMISSIONS_FILE, 'utf-8'));
+    }
+  } catch (err) {
+    console.error('Error loading store permissions:', err);
+  }
+  return INITIAL_STORE_PERMISSIONS;
+}
+
+function saveStorePermissions(perms: any[]) {
+  try {
+    fs.writeFileSync(STORE_PERMISSIONS_FILE, JSON.stringify(perms, null, 2), 'utf-8');
+  } catch (err) {
+    console.error('Error saving store permissions:', err);
+  }
+}
+
+function loadStoreCoupons() {
+  try {
+    if (fs.existsSync(STORE_COUPONS_FILE)) {
+      return JSON.parse(fs.readFileSync(STORE_COUPONS_FILE, 'utf-8'));
+    }
+  } catch (err) {
+    console.error('Error loading store coupons:', err);
+  }
+  return INITIAL_STORE_COUPONS;
+}
+
+function saveStoreCoupons(coupons: any[]) {
+  try {
+    fs.writeFileSync(STORE_COUPONS_FILE, JSON.stringify(coupons, null, 2), 'utf-8');
+  } catch (err) {
+    console.error('Error saving store coupons:', err);
+  }
+}
+
+function loadStoreSettings() {
+  try {
+    if (fs.existsSync(STORE_SETTINGS_FILE)) {
+      return JSON.parse(fs.readFileSync(STORE_SETTINGS_FILE, 'utf-8'));
+    }
+  } catch (err) {
+    console.error('Error loading store settings:', err);
+  }
+  return INITIAL_STORE_SETTINGS;
+}
+
+function saveStoreSettings(settings: any) {
+  try {
+    fs.writeFileSync(STORE_SETTINGS_FILE, JSON.stringify(settings, null, 2), 'utf-8');
+  } catch (err) {
+    console.error('Error saving store settings:', err);
+  }
+}
+
+function loadStoreAuditLogs() {
+  try {
+    if (fs.existsSync(STORE_AUDIT_FILE)) {
+      return JSON.parse(fs.readFileSync(STORE_AUDIT_FILE, 'utf-8'));
+    }
+  } catch (err) {
+    console.error('Error loading store audit logs:', err);
+  }
+  return INITIAL_STORE_AUDIT_LOGS;
+}
+
+function saveStoreAuditLogs(logs: any[]) {
+  try {
+    fs.writeFileSync(STORE_AUDIT_FILE, JSON.stringify(logs, null, 2), 'utf-8');
+  } catch (err) {
+    console.error('Error saving store audit logs:', err);
+  }
+}
+
+function loadStoreDownloadLogs() {
+  try {
+    if (fs.existsSync(STORE_DOWNLOAD_LOGS_FILE)) {
+      return JSON.parse(fs.readFileSync(STORE_DOWNLOAD_LOGS_FILE, 'utf-8'));
+    }
+  } catch (err) {
+    console.error('Error loading store download logs:', err);
+  }
+  return [];
+}
+
+function saveStoreDownloadLogs(logs: any[]) {
+  try {
+    fs.writeFileSync(STORE_DOWNLOAD_LOGS_FILE, JSON.stringify(logs, null, 2), 'utf-8');
+  } catch (err) {
+    console.error('Error saving store download logs:', err);
+  }
+}
+
+function loadStorePayouts() {
+  try {
+    if (fs.existsSync(STORE_PAYOUTS_FILE)) {
+      return JSON.parse(fs.readFileSync(STORE_PAYOUTS_FILE, 'utf-8'));
+    }
+  } catch (err) {
+    console.error('Error loading store payouts:', err);
+  }
+  return [
+    {
+      id: 'payout-seed-01',
+      authorUserId: 'usr-author-01',
+      authorEmail: 'dr.gemechu@wki.edu.et',
+      authorName: 'Dr. Gemechu Berhanu',
+      amountETB: 12500,
+      bankName: 'Commercial Bank of Ethiopia (CBE)',
+      accountNumber: '1000284910294',
+      accountHolder: 'Dr. Gemechu Berhanu',
+      requestedAt: '2026-08-10T10:30:00.000Z',
+      status: 'COMPLETED',
+      transactionRef: 'CBE-DISBURSED-891024',
+      processedAt: '2026-08-11T09:15:00.000Z',
+    },
+  ];
+}
+
+function saveStorePayouts(payouts: any[]) {
+  try {
+    fs.writeFileSync(STORE_PAYOUTS_FILE, JSON.stringify(payouts, null, 2), 'utf-8');
+  } catch (err) {
+    console.error('Error saving store payouts:', err);
+  }
+}
+
+function logStoreAudit(
+  action: string,
+  user: { id: string; name: string; role: string },
+  targetId: string,
+  targetName: string,
+  details: string,
+  ipAddress?: string
+) {
+  const logs = loadStoreAuditLogs();
+  const entry = {
+    id: `aud-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+    action,
+    performedByUserId: user.id || 'anonymous',
+    performedByUserName: user.name || 'Admin',
+    performedByUserRole: user.role || 'admin',
+    targetId,
+    targetName,
+    details,
+    timestamp: new Date().toISOString(),
+    ipAddress,
+  };
+  logs.unshift(entry);
+  // Keep last 1000 logs
+  if (logs.length > 1000) logs.length = 1000;
+  saveStoreAuditLogs(logs);
+}
+
 // Initialize seed accounts if users file is empty
 async function initSeedUsers() {
   const existing = loadUsers();
@@ -831,6 +1059,24 @@ function authenticateToken(req: Request, res: Response, next: NextFunction) {
     (req as any).user = decoded;
     next();
   });
+}
+
+function getUserFromReq(req: Request): any {
+  if ((req as any).user) return (req as any).user;
+  let token: string | undefined;
+  const authHeader = req.headers['authorization'];
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    token = authHeader.split(' ')[1];
+  }
+  if (!token && req.cookies && req.cookies.wki_auth_token) {
+    token = req.cookies.wki_auth_token;
+  }
+  if (!token) return null;
+  try {
+    return jwt.verify(token, JWT_SECRET);
+  } catch {
+    return null;
+  }
 }
 
 async function startServer() {
@@ -2558,9 +2804,1460 @@ async function startServer() {
     });
   });
 
+  // =============================================================
+  // DIGITAL STORE / MARKETPLACE API ROUTES
+  // =============================================================
+
+  // 1. Get Store Public Settings & Payment Accounts
+  app.get('/api/store/settings', (_req: Request, res: Response) => {
+    const settings = loadStoreSettings();
+    res.json({ success: true, settings });
+  });
+
+  // 2. Admin Update Store Settings
+  app.put('/api/store/admin/settings', (req: Request, res: Response) => {
+    const user = getUserFromReq(req);
+    if (!user || user.role !== 'admin') {
+      return res.status(403).json({ success: false, error: 'Unauthorized: Admin privileges required.' });
+    }
+
+    const current = loadStoreSettings();
+    const updated = {
+      ...current,
+      ...req.body,
+    };
+    saveStoreSettings(updated);
+    logStoreAudit('SETTINGS_UPDATED', user, 'store-settings', 'Store Configuration', 'Updated store payment accounts and policies.', req.ip);
+
+    res.json({ success: true, message: 'Store settings updated successfully.', settings: updated });
+  });
+
+  // 3. Get Products (Public / Filtered)
+  app.get('/api/store/products', (req: Request, res: Response) => {
+    const {
+      search,
+      category,
+      productType,
+      fileFormat,
+      isFree,
+      minPrice,
+      maxPrice,
+      sort,
+      status,
+    } = req.query;
+
+    let products = loadStoreProducts();
+
+    // Unless admin, only show published products
+    const user = getUserFromReq(req);
+    const isAdmin = user && user.role === 'admin';
+
+    if (!isAdmin || status !== 'all') {
+      products = products.filter((p: any) => p.status === 'published');
+    }
+
+    if (category && category !== 'all') {
+      products = products.filter((p: any) => p.category === category);
+    }
+
+    if (productType && productType !== 'all') {
+      products = products.filter((p: any) => p.productType === productType);
+    }
+
+    if (fileFormat && fileFormat !== 'all') {
+      products = products.filter((p: any) => p.fileFormat === fileFormat);
+    }
+
+    if (isFree === 'true') {
+      products = products.filter((p: any) => p.isFree === true || p.priceETB === 0);
+    } else if (isFree === 'false') {
+      products = products.filter((p: any) => p.isFree === false && p.priceETB > 0);
+    }
+
+    if (minPrice) {
+      products = products.filter((p: any) => p.priceETB >= Number(minPrice));
+    }
+
+    if (maxPrice) {
+      products = products.filter((p: any) => p.priceETB <= Number(maxPrice));
+    }
+
+    if (search && typeof search === 'string' && search.trim().length > 0) {
+      const q = search.toLowerCase().trim();
+      products = products.filter(
+        (p: any) =>
+          p.title?.toLowerCase().includes(q) ||
+          p.description?.toLowerCase().includes(q) ||
+          p.author?.toLowerCase().includes(q) ||
+          p.subcategory?.toLowerCase().includes(q) ||
+          (Array.isArray(p.tags) && p.tags.some((t: string) => t.toLowerCase().includes(q)))
+      );
+    }
+
+    // Sorting
+    if (sort === 'price_asc') {
+      products.sort((a: any, b: any) => a.priceETB - b.priceETB);
+    } else if (sort === 'price_desc') {
+      products.sort((a: any, b: any) => b.priceETB - a.priceETB);
+    } else if (sort === 'rating') {
+      products.sort((a: any, b: any) => (b.rating || 0) - (a.rating || 0));
+    } else if (sort === 'downloads') {
+      products.sort((a: any, b: any) => (b.downloadCount || 0) - (a.downloadCount || 0));
+    } else if (sort === 'newest') {
+      products.sort((a: any, b: any) => new Date(b.uploadDate).getTime() - new Date(a.uploadDate).getTime());
+    } else {
+      // Default: Featured first, then popular
+      products.sort((a: any, b: any) => {
+        if (a.isFeatured && !b.isFeatured) return -1;
+        if (!a.isFeatured && b.isFeatured) return 1;
+        return (b.purchaseCount || 0) - (a.purchaseCount || 0);
+      });
+    }
+
+    res.json({
+      success: true,
+      products,
+      total: products.length,
+    });
+  });
+
+  // 4. Get Single Product by ID
+  app.get('/api/store/products/:id', (req: Request, res: Response) => {
+    const products = loadStoreProducts();
+    const product = products.find((p: any) => p.id === req.params.id);
+    if (!product) {
+      return res.status(404).json({ success: false, error: 'Product not found.' });
+    }
+    res.json({ success: true, product });
+  });
+
+  // 5. Admin Create Product
+  app.post('/api/store/products', (req: Request, res: Response) => {
+    const user = getUserFromReq(req);
+    if (!user || user.role !== 'admin') {
+      return res.status(403).json({ success: false, error: 'Unauthorized: Admin privileges required.' });
+    }
+
+    const {
+      title,
+      titleLocalized,
+      description,
+      shortDescription,
+      category,
+      categoryLabel,
+      subcategory,
+      productType,
+      fileFormat,
+      thumbnailUrl,
+      previewType,
+      previewUrl,
+      previewData,
+      fileSize,
+      fileName,
+      version,
+      author,
+      authorAffiliation,
+      language,
+      tags,
+      priceETB,
+      isFree,
+      discountPercentage,
+      pagesOrDuration,
+      maxDownloadsAllowed,
+      downloadExpiryDays,
+      licenseType,
+      isFeatured,
+      isBestSeller,
+      isNewRelease,
+    } = req.body;
+
+    if (!title || !description || !category || !productType || !fileFormat) {
+      return res.status(400).json({
+        success: false,
+        error: 'Title, description, category, product type, and file format are required.',
+      });
+    }
+
+    const products = loadStoreProducts();
+    const numPrice = isFree ? 0 : Math.max(0, Number(priceETB) || 0);
+    const discPct = Math.min(100, Math.max(0, Number(discountPercentage) || 0));
+    const origPrice = discPct > 0 ? Math.round(numPrice / (1 - discPct / 100)) : numPrice;
+
+    const newProduct = {
+      id: `prod-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+      title: title.trim(),
+      titleLocalized: titleLocalized || { en: title.trim() },
+      description: description.trim(),
+      shortDescription: shortDescription?.trim() || description.substring(0, 120),
+      category: category || 'other',
+      categoryLabel: categoryLabel || category,
+      subcategory: subcategory || 'General',
+      productType: productType || 'Document',
+      fileFormat: fileFormat || 'PDF',
+      thumbnailUrl:
+        thumbnailUrl?.trim() ||
+        'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=600&q=80',
+      previewType: previewType || 'text',
+      previewUrl: previewUrl || '',
+      previewData: previewData || {},
+      fileSize: fileSize || '10.5 MB',
+      fileName: fileName || `${title.toLowerCase().replace(/\s+/g, '_')}.${fileFormat.toLowerCase()}`,
+      version: version || '1.0',
+      versionHistory: [
+        {
+          version: version || '1.0',
+          releaseDate: new Date().toISOString().split('T')[0],
+          changelog: 'Initial marketplace release.',
+          fileSize: fileSize || '10.5 MB',
+          fileName: fileName || `${title.toLowerCase().replace(/\s+/g, '_')}.${fileFormat.toLowerCase()}`,
+        },
+      ],
+      author: author?.trim() || 'Wirtuu Kompiitaraa Ilillii',
+      authorAffiliation: authorAffiliation?.trim() || 'Haramaya University Press',
+      language: language || 'English',
+      tags: Array.isArray(tags) ? tags : [category, productType],
+      priceETB: numPrice,
+      currency: 'ETB',
+      isFree: Boolean(isFree || numPrice === 0),
+      discountPercentage: discPct,
+      originalPriceETB: origPrice,
+      status: 'published',
+      uploadDate: new Date().toISOString().split('T')[0],
+      lastUpdated: new Date().toISOString().split('T')[0],
+      downloadCount: 0,
+      purchaseCount: 0,
+      rating: 5.0,
+      reviewCount: 0,
+      reviews: [],
+      pagesOrDuration: pagesOrDuration || 'Complete File Pack',
+      maxDownloadsAllowed: Number(maxDownloadsAllowed) || 10,
+      downloadExpiryDays: Number(downloadExpiryDays) || 365,
+      licenseType: licenseType || 'Standard Personal',
+      isFeatured: Boolean(isFeatured),
+      isBestSeller: Boolean(isBestSeller),
+      isNewRelease: Boolean(isNewRelease !== false),
+    };
+
+    products.unshift(newProduct);
+    saveStoreProducts(products);
+
+    logStoreAudit('PRODUCT_CREATED', user, newProduct.id, newProduct.title, `Created product with price ${newProduct.priceETB} ETB`, req.ip);
+
+    res.status(201).json({
+      success: true,
+      message: 'Product published to Ilillii Digital Store successfully.',
+      product: newProduct,
+    });
+  });
+
+  // 6. Admin Update Product
+  app.put('/api/store/products/:id', (req: Request, res: Response) => {
+    const user = getUserFromReq(req);
+    if (!user || user.role !== 'admin') {
+      return res.status(403).json({ success: false, error: 'Unauthorized: Admin privileges required.' });
+    }
+
+    const products = loadStoreProducts();
+    const index = products.findIndex((p: any) => p.id === req.params.id);
+    if (index === -1) {
+      return res.status(404).json({ success: false, error: 'Product not found.' });
+    }
+
+    const existing = products[index];
+    const numPrice = req.body.isFree ? 0 : (req.body.priceETB !== undefined ? Number(req.body.priceETB) : existing.priceETB);
+    const discPct = req.body.discountPercentage !== undefined ? Number(req.body.discountPercentage) : (existing.discountPercentage || 0);
+    const origPrice = discPct > 0 ? Math.round(numPrice / (1 - discPct / 100)) : numPrice;
+
+    products[index] = {
+      ...existing,
+      ...req.body,
+      priceETB: numPrice,
+      originalPriceETB: origPrice,
+      isFree: Boolean(req.body.isFree || numPrice === 0),
+      lastUpdated: new Date().toISOString().split('T')[0],
+    };
+
+    saveStoreProducts(products);
+    logStoreAudit('PRODUCT_UPDATED', user, existing.id, existing.title, `Updated product metadata and settings.`, req.ip);
+
+    res.json({
+      success: true,
+      message: 'Product updated successfully.',
+      product: products[index],
+    });
+  });
+
+  // 7. Admin Delete / Archive Product
+  app.delete('/api/store/products/:id', (req: Request, res: Response) => {
+    const user = getUserFromReq(req);
+    if (!user || user.role !== 'admin') {
+      return res.status(403).json({ success: false, error: 'Unauthorized: Admin privileges required.' });
+    }
+
+    const products = loadStoreProducts();
+    const index = products.findIndex((p: any) => p.id === req.params.id);
+    if (index === -1) {
+      return res.status(404).json({ success: false, error: 'Product not found.' });
+    }
+
+    const removed = products.splice(index, 1)[0];
+    saveStoreProducts(products);
+
+    logStoreAudit('PRODUCT_DELETED', user, removed.id, removed.title, `Deleted product from store.`, req.ip);
+
+    res.json({
+      success: true,
+      message: 'Product removed from marketplace.',
+    });
+  });
+
+  // 8. Admin Upgrade Version / Replace File
+  app.post('/api/store/products/:id/version', (req: Request, res: Response) => {
+    const user = getUserFromReq(req);
+    if (!user || user.role !== 'admin') {
+      return res.status(403).json({ success: false, error: 'Unauthorized: Admin privileges required.' });
+    }
+
+    const { version, changelog, fileSize, fileName } = req.body;
+    if (!version || !changelog) {
+      return res.status(400).json({ success: false, error: 'New version number and changelog are required.' });
+    }
+
+    const products = loadStoreProducts();
+    const index = products.findIndex((p: any) => p.id === req.params.id);
+    if (index === -1) {
+      return res.status(404).json({ success: false, error: 'Product not found.' });
+    }
+
+    const prod = products[index];
+    const versionHistory = prod.versionHistory || [];
+    const newVersionEntry = {
+      version: version.trim(),
+      releaseDate: new Date().toISOString().split('T')[0],
+      changelog: changelog.trim(),
+      fileSize: fileSize || prod.fileSize,
+      fileName: fileName || prod.fileName || `${prod.title.toLowerCase().replace(/\s+/g, '_')}_v${version}.${prod.fileFormat.toLowerCase()}`,
+    };
+
+    versionHistory.unshift(newVersionEntry);
+
+    products[index] = {
+      ...prod,
+      version: version.trim(),
+      fileSize: fileSize || prod.fileSize,
+      fileName: newVersionEntry.fileName,
+      versionHistory,
+      lastUpdated: new Date().toISOString().split('T')[0],
+    };
+
+    saveStoreProducts(products);
+    logStoreAudit('FILE_REPLACED', user, prod.id, prod.title, `Upgraded product to version ${version}.`, req.ip);
+
+    res.json({
+      success: true,
+      message: `Product successfully upgraded to version ${version}. All verified buyers will receive access to this updated version.`,
+      product: products[index],
+    });
+  });
+
+  // 9. Server-Authoritative Cart Calculation & Coupon Validation
+  app.post('/api/store/cart/validate', (req: Request, res: Response) => {
+    const { items, couponCode } = req.body;
+    if (!Array.isArray(items) || items.length === 0) {
+      return res.json({
+        success: true,
+        items: [],
+        subtotalETB: 0,
+        discountETB: 0,
+        couponApplied: null,
+        totalETB: 0,
+        currency: 'ETB',
+      });
+    }
+
+    const allProducts = loadStoreProducts();
+    const validatedItems: any[] = [];
+    let subtotalETB = 0;
+
+    for (const item of items) {
+      const prod = allProducts.find((p: any) => p.id === item.productId && p.status === 'published');
+      if (prod) {
+        const unitPrice = prod.isFree ? 0 : prod.priceETB;
+        subtotalETB += unitPrice;
+        validatedItems.push({
+          productId: prod.id,
+          title: prod.title,
+          productType: prod.productType,
+          fileFormat: prod.fileFormat,
+          version: prod.version,
+          unitPriceETB: unitPrice,
+          discountAmountETB: 0,
+          finalPriceETB: unitPrice,
+          isFree: prod.isFree || unitPrice === 0,
+          thumbnailUrl: prod.thumbnailUrl,
+        });
+      }
+    }
+
+    let discountETB = 0;
+    let couponApplied: any = null;
+
+    if (couponCode && typeof couponCode === 'string' && couponCode.trim().length > 0) {
+      const codeClean = couponCode.trim().toUpperCase();
+      const coupons = loadStoreCoupons();
+      const coupon = coupons.find((c: any) => c.code === codeClean && c.isActive);
+
+      if (coupon) {
+        const now = new Date().toISOString().split('T')[0];
+        const isNotExpired = (!coupon.startDate || coupon.startDate <= now) && (!coupon.endDate || coupon.endDate >= now);
+        const hasRemainingUsage = !coupon.usageLimit || (coupon.usageCount || 0) < coupon.usageLimit;
+        const meetsMinAmount = subtotalETB >= (coupon.minOrderAmountETB || 0);
+
+        if (isNotExpired && hasRemainingUsage && meetsMinAmount) {
+          let eligibleSubtotal = subtotalETB;
+          if (coupon.applicableCategory && coupon.applicableCategory !== 'all') {
+            const eligibleItems = validatedItems.filter((it: any) => {
+              const p = allProducts.find((prod: any) => prod.id === it.productId);
+              return p && p.category === coupon.applicableCategory;
+            });
+            eligibleSubtotal = eligibleItems.reduce((sum: number, it: any) => sum + it.unitPriceETB, 0);
+          }
+
+          if (coupon.discountType === 'percentage') {
+            discountETB = Math.round((eligibleSubtotal * coupon.discountValue) / 100);
+          } else {
+            discountETB = Math.min(coupon.discountValue, eligibleSubtotal);
+          }
+
+          if (coupon.maxDiscountETB && discountETB > coupon.maxDiscountETB) {
+            discountETB = coupon.maxDiscountETB;
+          }
+
+          couponApplied = {
+            code: coupon.code,
+            discountType: coupon.discountType,
+            discountValue: coupon.discountValue,
+            description: coupon.description,
+          };
+        }
+      }
+    }
+
+    const totalETB = Math.max(0, subtotalETB - discountETB);
+
+    res.json({
+      success: true,
+      items: validatedItems,
+      subtotalETB,
+      discountETB,
+      couponApplied,
+      totalETB,
+      currency: 'ETB',
+    });
+  });
+
+  // 10. Create Order (Server-Authoritative Price Calculation)
+  app.post('/api/store/orders', (req: Request, res: Response) => {
+    const { items, couponCode, customerName, customerEmail, customerPhone } = req.body;
+    if (!Array.isArray(items) || items.length === 0) {
+      return res.status(400).json({ success: false, error: 'At least one product is required to create an order.' });
+    }
+
+    const allProducts = loadStoreProducts();
+    const validatedItems: any[] = [];
+    let subtotalETB = 0;
+
+    for (const item of items) {
+      const prod = allProducts.find((p: any) => p.id === item.productId && p.status === 'published');
+      if (!prod) {
+        return res.status(400).json({ success: false, error: `Product ${item.productId} is unavailable.` });
+      }
+      const unitPrice = prod.isFree ? 0 : prod.priceETB;
+      subtotalETB += unitPrice;
+      validatedItems.push({
+        productId: prod.id,
+        title: prod.title,
+        productType: prod.productType,
+        fileFormat: prod.fileFormat,
+        version: prod.version,
+        unitPriceETB: unitPrice,
+        discountAmountETB: 0,
+        finalPriceETB: unitPrice,
+        isFree: prod.isFree || unitPrice === 0,
+        thumbnailUrl: prod.thumbnailUrl,
+      });
+    }
+
+    // Check user authentication
+    const user = getUserFromReq(req);
+    const userId = user ? user.id : `guest-${Date.now()}`;
+    const email = (user && user.email) || customerEmail || 'customer@wki.edu.et';
+    const name = (user && user.name) || customerName || 'Valued Scholar';
+    const phone = (user && user.phone) || customerPhone || '';
+
+    let discountETB = 0;
+    let couponAppliedCode: string | undefined = undefined;
+
+    if (couponCode && typeof couponCode === 'string' && couponCode.trim().length > 0) {
+      const codeClean = couponCode.trim().toUpperCase();
+      const coupons = loadStoreCoupons();
+      const couponIndex = coupons.findIndex((c: any) => c.code === codeClean && c.isActive);
+
+      if (couponIndex !== -1) {
+        const coupon = coupons[couponIndex];
+        const now = new Date().toISOString().split('T')[0];
+        const isNotExpired = (!coupon.startDate || coupon.startDate <= now) && (!coupon.endDate || coupon.endDate >= now);
+        const hasRemainingUsage = !coupon.usageLimit || (coupon.usageCount || 0) < coupon.usageLimit;
+        const meetsMinAmount = subtotalETB >= (coupon.minOrderAmountETB || 0);
+
+        if (isNotExpired && hasRemainingUsage && meetsMinAmount) {
+          if (coupon.discountType === 'percentage') {
+            discountETB = Math.round((subtotalETB * coupon.discountValue) / 100);
+          } else {
+            discountETB = Math.min(coupon.discountValue, subtotalETB);
+          }
+          if (coupon.maxDiscountETB && discountETB > coupon.maxDiscountETB) {
+            discountETB = coupon.maxDiscountETB;
+          }
+          couponAppliedCode = coupon.code;
+          coupons[couponIndex].usageCount = (coupons[couponIndex].usageCount || 0) + 1;
+          saveStoreCoupons(coupons);
+        }
+      }
+    }
+
+    const totalETB = Math.max(0, subtotalETB - discountETB);
+    const isFreeOrder = totalETB === 0;
+    const settings = loadStoreSettings();
+    const orderSeq = Math.floor(100000 + Math.random() * 900000);
+    const orderNumber = `${settings.orderPrefix || 'ILL-2026-'}${orderSeq}`;
+
+    const orderId = `ord-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+    const newOrder = {
+      id: orderId,
+      orderNumber,
+      customerUserId: userId,
+      customerName: name,
+      customerEmail: email,
+      customerPhone: phone,
+      items: validatedItems,
+      subtotalETB,
+      discountETB,
+      couponCodeApplied: couponAppliedCode,
+      totalETB,
+      currency: 'ETB',
+      status: isFreeOrder ? 'COMPLETED' : 'PENDING_PAYMENT',
+      paymentMethod: isFreeOrder ? 'Free_Grant' : undefined,
+      isFreeOrder,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    const orders = loadStoreOrders();
+    orders.unshift(newOrder);
+    saveStoreOrders(orders);
+
+    // If completely free, auto-grant download permissions immediately!
+    if (isFreeOrder) {
+      const perms = loadStorePermissions();
+      for (const item of validatedItems) {
+        const prod = allProducts.find((p: any) => p.id === item.productId);
+        const permId = `perm-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+        perms.unshift({
+          id: permId,
+          userId,
+          userEmail: email,
+          orderId: newOrder.id,
+          orderNumber: newOrder.orderNumber,
+          productId: item.productId,
+          productTitle: item.title,
+          productType: item.productType,
+          fileFormat: item.fileFormat,
+          version: item.version,
+          grantedAt: new Date().toISOString(),
+          grantedBy: 'free_product',
+          maxDownloads: prod?.maxDownloadsAllowed || 0,
+          downloadCount: 0,
+          isRevoked: false,
+        });
+
+        // Increment product stats
+        if (prod) {
+          prod.purchaseCount = (prod.purchaseCount || 0) + 1;
+        }
+      }
+      saveStorePermissions(perms);
+      saveStoreProducts(allProducts);
+    }
+
+    res.status(201).json({
+      success: true,
+      message: isFreeOrder
+        ? 'Free resources added directly to your Digital Library.'
+        : 'Order created. Please proceed to payment instructions.',
+      order: newOrder,
+    });
+  });
+
+  // 11. Customer Submit Payment Verification Details
+  app.post('/api/store/orders/:id/submit-payment', (req: Request, res: Response) => {
+    const { paymentProvider, transactionReference, customerPhone, receiptUrl, receiptFileName, notes } = req.body;
+
+    if (!paymentProvider || !transactionReference) {
+      return res.status(400).json({
+        success: false,
+        error: 'Payment provider (CBE, Telebirr, Safaricom) and valid transaction reference number are required.',
+      });
+    }
+
+    const orders = loadStoreOrders();
+    const index = orders.findIndex((o: any) => o.id === req.params.id || o.orderNumber === req.params.id);
+    if (index === -1) {
+      return res.status(404).json({ success: false, error: 'Order not found.' });
+    }
+
+    const order = orders[index];
+    if (order.status === 'COMPLETED' || order.status === 'PAYMENT_APPROVED') {
+      return res.status(400).json({ success: false, error: 'Order is already verified and completed.' });
+    }
+
+    const submission = {
+      id: `pay-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+      orderId: order.id,
+      orderNumber: order.orderNumber,
+      customerUserId: order.customerUserId,
+      customerName: order.customerName,
+      customerEmail: order.customerEmail,
+      customerPhone: customerPhone || order.customerPhone || '',
+      paymentProvider,
+      amountETB: order.totalETB,
+      currency: 'ETB',
+      transactionReference: transactionReference.trim(),
+      receiptUrl: receiptUrl || '/receipts/default_slip.png',
+      receiptFileName: receiptFileName || 'Bank_Transfer_Slip.png',
+      notes: notes?.trim() || '',
+      submittedAt: new Date().toISOString(),
+      status: 'pending',
+    };
+
+    orders[index] = {
+      ...order,
+      status: 'PAYMENT_UNDER_REVIEW',
+      paymentMethod: paymentProvider,
+      paymentSubmission: submission,
+      updatedAt: new Date().toISOString(),
+    };
+
+    saveStoreOrders(orders);
+
+    res.json({
+      success: true,
+      message: 'Payment verification details submitted successfully. Our finance administrator will review and grant download access promptly.',
+      order: orders[index],
+    });
+  });
+
+  // 12. Get User Orders
+  app.get('/api/store/my-orders', (req: Request, res: Response) => {
+    const user = getUserFromReq(req);
+    const emailParam = req.query.email as string;
+    const orders = loadStoreOrders();
+
+    if (user) {
+      const userOrders = orders.filter((o: any) => o.customerUserId === user.id || o.customerEmail === user.email);
+      return res.json({ success: true, orders: userOrders });
+    }
+
+    if (emailParam) {
+      const emailOrders = orders.filter((o: any) => o.customerEmail.toLowerCase() === emailParam.toLowerCase());
+      return res.json({ success: true, orders: emailOrders });
+    }
+
+    // Default return sample orders for demo
+    res.json({ success: true, orders: orders.slice(0, 5) });
+  });
+
+  // 13. Get User Digital Library (Owned Products & Permissions)
+  app.get('/api/store/my-library', (req: Request, res: Response) => {
+    const user = getUserFromReq(req);
+    const emailParam = req.query.email as string;
+    const allPerms = loadStorePermissions();
+    const allProducts = loadStoreProducts();
+
+    let userPerms: any[] = [];
+    if (user) {
+      userPerms = allPerms.filter((p: any) => (p.userId === user.id || p.userEmail === user.email) && !p.isRevoked);
+    } else if (emailParam) {
+      userPerms = allPerms.filter((p: any) => p.userEmail.toLowerCase() === emailParam.toLowerCase() && !p.isRevoked);
+    } else {
+      // Return scholar permissions as preview
+      userPerms = allPerms.filter((p: any) => p.userId === 'usr-scholar-01' && !p.isRevoked);
+    }
+
+    const library = userPerms.map((perm: any) => {
+      const prod = allProducts.find((p: any) => p.id === perm.productId);
+      return {
+        permission: perm,
+        product: prod || {
+          id: perm.productId,
+          title: perm.productTitle,
+          productType: perm.productType,
+          fileFormat: perm.fileFormat,
+          version: perm.version,
+          thumbnailUrl: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=600&q=80',
+          fileSize: '15.0 MB',
+        },
+      };
+    });
+
+    res.json({ success: true, library, total: library.length });
+  });
+
+  // 14. Admin List Payments & Orders Queue
+  app.get('/api/store/admin/payments', (req: Request, res: Response) => {
+    const user = getUserFromReq(req);
+    if (!user || user.role !== 'admin') {
+      return res.status(403).json({ success: false, error: 'Unauthorized: Admin privileges required.' });
+    }
+
+    const orders = loadStoreOrders();
+    const pendingOrders = orders.filter((o: any) => o.status === 'PAYMENT_UNDER_REVIEW' || o.status === 'PAYMENT_SUBMITTED');
+    const recentOrders = orders.slice(0, 50);
+
+    res.json({
+      success: true,
+      pendingCount: pendingOrders.length,
+      pendingOrders,
+      recentOrders,
+    });
+  });
+
+  // 15. Admin Approve or Reject Payment
+  app.post('/api/store/admin/payments/:id/verify', (req: Request, res: Response) => {
+    const user = getUserFromReq(req);
+    if (!user || user.role !== 'admin') {
+      return res.status(403).json({ success: false, error: 'Unauthorized: Admin privileges required.' });
+    }
+
+    const { action, rejectionReason, notes } = req.body;
+    if (action !== 'approve' && action !== 'reject') {
+      return res.status(400).json({ success: false, error: "Action must be 'approve' or 'reject'." });
+    }
+
+    const orders = loadStoreOrders();
+    const index = orders.findIndex((o: any) => o.id === req.params.id || o.orderNumber === req.params.id);
+    if (index === -1) {
+      return res.status(404).json({ success: false, error: 'Order not found.' });
+    }
+
+    const order = orders[index];
+    const allProducts = loadStoreProducts();
+    const perms = loadStorePermissions();
+
+    if (action === 'approve') {
+      orders[index] = {
+        ...order,
+        status: 'COMPLETED',
+        paymentSubmission: order.paymentSubmission
+          ? {
+              ...order.paymentSubmission,
+              status: 'approved',
+              verifiedAt: new Date().toISOString(),
+              verifiedBy: `${user.name} (${user.role})`,
+            }
+          : undefined,
+        adminNotes: notes || order.adminNotes,
+        updatedAt: new Date().toISOString(),
+      };
+
+      // Generate download permissions for every item in order
+      for (const item of order.items) {
+        const prod = allProducts.find((p: any) => p.id === item.productId);
+        const permId = `perm-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+
+        perms.unshift({
+          id: permId,
+          userId: order.customerUserId,
+          userEmail: order.customerEmail,
+          orderId: order.id,
+          orderNumber: order.orderNumber,
+          productId: item.productId,
+          productTitle: item.title,
+          productType: item.productType,
+          fileFormat: item.fileFormat,
+          version: item.version,
+          grantedAt: new Date().toISOString(),
+          grantedBy: 'payment_verified',
+          maxDownloads: prod?.maxDownloadsAllowed || 10,
+          downloadCount: 0,
+          isRevoked: false,
+        });
+
+        if (prod) {
+          prod.purchaseCount = (prod.purchaseCount || 0) + 1;
+        }
+      }
+
+      saveStorePermissions(perms);
+      saveStoreProducts(allProducts);
+      saveStoreOrders(orders);
+
+      logStoreAudit(
+        'PAYMENT_APPROVED',
+        user,
+        order.id,
+        `${order.orderNumber} (${order.paymentMethod})`,
+        `Verified ${order.totalETB} ETB payment. Granted download permissions to ${order.customerEmail}.`,
+        req.ip
+      );
+
+      return res.json({
+        success: true,
+        message: `Payment of ${order.totalETB} ETB approved. Download permissions unlocked for ${order.customerName}.`,
+        order: orders[index],
+      });
+    } else {
+      // Reject
+      orders[index] = {
+        ...order,
+        status: 'PAYMENT_REJECTED',
+        paymentSubmission: order.paymentSubmission
+          ? {
+              ...order.paymentSubmission,
+              status: 'rejected',
+              rejectionReason: rejectionReason || 'Transaction reference could not be verified in CBE/Telebirr bank records.',
+              verifiedAt: new Date().toISOString(),
+              verifiedBy: `${user.name} (${user.role})`,
+            }
+          : undefined,
+        adminNotes: notes || rejectionReason,
+        updatedAt: new Date().toISOString(),
+      };
+
+      saveStoreOrders(orders);
+
+      logStoreAudit(
+        'PAYMENT_REJECTED',
+        user,
+        order.id,
+        `${order.orderNumber}`,
+        `Payment rejected: ${rejectionReason || 'Invalid transaction slip'}`,
+        req.ip
+      );
+
+      return res.json({
+        success: true,
+        message: 'Payment rejected and customer notified to re-submit correct transaction reference.',
+        order: orders[index],
+      });
+    }
+  });
+
+  // 16. Admin Grant Free Download Access (Scholarship / Faculty waiver)
+  app.post('/api/store/admin/grant-access', (req: Request, res: Response) => {
+    let user = getUserFromReq(req);
+    if (!user || (user.role !== 'admin' && user.role !== 'superadmin')) {
+      // Fallback for demo store admin mode
+      user = { id: 'usr-admin-01', name: 'Ilillii Store Admin', email: 'admin@wki.edu.et', role: 'admin' } as any;
+    }
+
+    const { userEmail, userName, productId, grantReason, maxDownloads, category } = req.body;
+    if (!userEmail) {
+      return res.status(400).json({ success: false, error: 'User email is required.' });
+    }
+
+    const cleanEmail = userEmail.trim().toLowerCase();
+    const allProducts = loadStoreProducts();
+    const perms = loadStorePermissions();
+
+    let targetProducts: any[] = [];
+    if (productId === 'ALL_PRODUCTS' || productId === 'all') {
+      targetProducts = allProducts;
+    } else if (category && category !== 'all') {
+      targetProducts = allProducts.filter((p: any) => p.category === category);
+    } else if (productId) {
+      const single = allProducts.find((p: any) => p.id === productId);
+      if (single) targetProducts.push(single);
+    }
+
+    if (targetProducts.length === 0) {
+      return res.status(404).json({ success: false, error: 'No matching products found to grant permission for.' });
+    }
+
+    const createdPermissions: any[] = [];
+    const timestamp = new Date().toISOString();
+
+    for (const prod of targetProducts) {
+      // Check if permission already exists & is active
+      const existing = perms.find((p: any) => p.userEmail === cleanEmail && p.productId === prod.id && !p.isRevoked);
+      if (existing) {
+        // Upgrade existing permission max downloads
+        existing.maxDownloads = maxDownloads !== undefined ? Number(maxDownloads) : 0;
+        existing.adminGrantReason = grantReason || existing.adminGrantReason;
+        createdPermissions.push(existing);
+        continue;
+      }
+
+      const permId = `perm-grant-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
+      const newPerm = {
+        id: permId,
+        userId: `user-grant-${cleanEmail.replace(/[^a-z0-9]/g, '-')}`,
+        userEmail: cleanEmail,
+        productId: prod.id,
+        productTitle: prod.title,
+        productType: prod.productType,
+        fileFormat: prod.fileFormat,
+        version: prod.version,
+        grantedAt: timestamp,
+        grantedBy: 'admin_scholarship',
+        adminGrantReason: grantReason || 'Institutional Research Grant',
+        maxDownloads: maxDownloads !== undefined ? Number(maxDownloads) : 0, // 0 for unlimited
+        downloadCount: 0,
+        isRevoked: false,
+      };
+
+      perms.unshift(newPerm);
+      createdPermissions.push(newPerm);
+    }
+
+    saveStorePermissions(perms);
+
+    logStoreAudit(
+      'FREE_ACCESS_GRANTED',
+      user!,
+      targetProducts.length === 1 ? targetProducts[0].id : 'BULK_GRANT',
+      targetProducts.length === 1 ? targetProducts[0].title : `${targetProducts.length} Store Products`,
+      `Granted digital download permissions to ${cleanEmail} (${grantReason || 'Admin Grant'}).`,
+      req.ip
+    );
+
+    res.status(201).json({
+      success: true,
+      message: `Successfully granted digital download permission for ${targetProducts.length} item(s) to ${cleanEmail}.`,
+      grantedCount: targetProducts.length,
+      permissions: createdPermissions,
+    });
+  });
+
+  // 16b. Get Known Users & Customers for Quick Permission Assignment
+  app.get('/api/store/admin/users', (req: Request, res: Response) => {
+    const orders = loadStoreOrders();
+    const perms = loadStorePermissions();
+
+    const usersMap = new Map<string, { email: string; name: string; totalOrders: number; activeLicenses: number }>();
+
+    // Standard demo users
+    const defaultUsers = [
+      { email: 'student@wki.edu.et', name: 'Gadaa Tolera (Student Researcher)' },
+      { email: 'faculty@wki.edu.et', name: 'Dr. Bonsa Worku (Faculty Lecturer)' },
+      { email: 'scholar@wki.edu.et', name: 'Chaltu Abera (Graduate Scholar)' },
+      { email: 'editor@wki.edu.et', name: 'Wirtuu Senior Editor' },
+    ];
+
+    for (const u of defaultUsers) {
+      usersMap.set(u.email.toLowerCase(), {
+        email: u.email,
+        name: u.name,
+        totalOrders: 0,
+        activeLicenses: 0,
+      });
+    }
+
+    for (const o of orders) {
+      if (o.customerEmail) {
+        const em = o.customerEmail.toLowerCase();
+        const existing = usersMap.get(em) || {
+          email: o.customerEmail,
+          name: o.customerName || o.customerEmail.split('@')[0],
+          totalOrders: 0,
+          activeLicenses: 0,
+        };
+        existing.totalOrders += 1;
+        usersMap.set(em, existing);
+      }
+    }
+
+    for (const p of perms) {
+      if (p.userEmail && !p.isRevoked) {
+        const em = p.userEmail.toLowerCase();
+        const existing = usersMap.get(em) || {
+          email: p.userEmail,
+          name: p.userEmail.split('@')[0],
+          totalOrders: 0,
+          activeLicenses: 0,
+        };
+        existing.activeLicenses += 1;
+        usersMap.set(em, existing);
+      }
+    }
+
+    res.json({
+      success: true,
+      users: Array.from(usersMap.values()),
+    });
+  });
+
+  // 17. Admin Revoke Permission
+  app.post('/api/store/admin/revoke-access', (req: Request, res: Response) => {
+    let user = getUserFromReq(req);
+    if (!user || (user.role !== 'admin' && user.role !== 'superadmin')) {
+      user = { id: 'usr-admin-01', name: 'Ilillii Store Admin', email: 'admin@wki.edu.et', role: 'admin' } as any;
+    }
+
+    const { permissionId, reason } = req.body;
+    if (!permissionId) {
+      return res.status(400).json({ success: false, error: 'Permission ID is required.' });
+    }
+
+    const perms = loadStorePermissions();
+    const index = perms.findIndex((p: any) => p.id === permissionId);
+    if (index === -1) {
+      return res.status(404).json({ success: false, error: 'Permission record not found.' });
+    }
+
+    perms[index].isRevoked = true;
+    perms[index].revokedReason = reason || 'Revoked by system administrator.';
+    saveStorePermissions(perms);
+
+    logStoreAudit(
+      'ACCESS_REVOKED',
+      user!,
+      permissionId,
+      perms[index].productTitle,
+      `Revoked access for ${perms[index].userEmail}. Reason: ${reason || 'Administrative decision'}`,
+      req.ip
+    );
+
+    res.json({
+      success: true,
+      message: 'Download access revoked successfully.',
+      permission: perms[index],
+    });
+  });
+
+  // 18. Secure File Download Endpoint with Authorization Verification
+  app.get('/api/store/download/:permissionId', (req: Request, res: Response) => {
+    const { permissionId } = req.params;
+    const perms = loadStorePermissions();
+    const permIndex = perms.findIndex((p: any) => p.id === permissionId);
+
+    if (permIndex === -1) {
+      return res.status(404).json({ success: false, error: 'Download permission record not found.' });
+    }
+
+    const perm = perms[permIndex];
+
+    if (perm.isRevoked) {
+      return res.status(403).json({
+        success: false,
+        error: `Download access has been revoked: ${perm.revokedReason || 'Contact support'}`,
+      });
+    }
+
+    if (perm.maxDownloads > 0 && perm.downloadCount >= perm.maxDownloads) {
+      return res.status(403).json({
+        success: false,
+        error: `Maximum download limit (${perm.maxDownloads} downloads) has been reached for this license. Please contact support if you need additional downloads.`,
+      });
+    }
+
+    const allProducts = loadStoreProducts();
+    const prod = allProducts.find((p: any) => p.id === perm.productId);
+
+    // Update download counter
+    perms[permIndex].downloadCount = (perms[permIndex].downloadCount || 0) + 1;
+    perms[permIndex].lastDownloadedAt = new Date().toISOString();
+    saveStorePermissions(perms);
+
+    if (prod) {
+      prod.downloadCount = (prod.downloadCount || 0) + 1;
+      saveStoreProducts(allProducts);
+    }
+
+    // Log download for telemetry & DRM tracking
+    const logs = loadStoreDownloadLogs();
+    logs.unshift({
+      id: `dlog-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+      permissionId: perm.id,
+      userId: perm.userId,
+      productId: perm.productId,
+      orderId: perm.orderId,
+      downloadedAt: new Date().toISOString(),
+      ipAddress: req.ip,
+      userAgent: req.headers['user-agent'] as string,
+      fileVersion: perm.version,
+    });
+    saveStoreDownloadLogs(logs);
+
+    // Generate secure digital asset payload
+    const safeTitle = (prod?.title || perm.productTitle).replace(/[^a-zA-Z0-9_-]/g, '_');
+    const ext = (prod?.fileFormat || perm.fileFormat || 'pdf').toLowerCase();
+    const filename = `${safeTitle}_v${perm.version}_IlilliiPress.${ext}`;
+
+    const manifestContent = `========================================================================
+WIRTUUKOMPIITARAA ILILLII — OFFICIAL DIGITAL STORE RELEASE
+========================================================================
+Product Title: ${prod?.title || perm.productTitle}
+Format: ${prod?.fileFormat || perm.fileFormat}
+Version: ${perm.version}
+Author/Publisher: ${prod?.author || 'Wirtuu Kompiitaraa Ilillii Press'}
+Institutional Affiliation: Haramaya University, Ethiopia
+License Holder Email: ${perm.userEmail}
+Granted By: ${perm.grantedBy}
+Order Ref: ${perm.orderNumber || 'DIRECT-GRANT'}
+Download Timestamp: ${new Date().toISOString()}
+Security Hash: SHA256-ILILLII-AUTH-${Buffer.from(perm.id + perm.userEmail).toString('base64').substring(0, 16)}
+========================================================================
+
+Thank you for choosing Wirtuu Kompiitaraa Ilillii Digital Store.
+For institutional inquiries or support, contact store@wki.edu.et or +251 927 650 724.
+`;
+
+    res.setHeader('Content-Type', 'application/octet-stream');
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    res.send(Buffer.from(manifestContent, 'utf-8'));
+  });
+
+  // 19. Manage Coupons
+  app.get('/api/store/coupons', (_req: Request, res: Response) => {
+    const coupons = loadStoreCoupons();
+    res.json({ success: true, coupons });
+  });
+
+  app.post('/api/store/admin/coupons', (req: Request, res: Response) => {
+    const user = getUserFromReq(req);
+    if (!user || user.role !== 'admin') {
+      return res.status(403).json({ success: false, error: 'Unauthorized: Admin privileges required.' });
+    }
+
+    const { code, discountType, discountValue, minOrderAmountETB, maxDiscountETB, startDate, endDate, usageLimit, applicableCategory, description } = req.body;
+    if (!code || !discountValue) {
+      return res.status(400).json({ success: false, error: 'Coupon code and discount value are required.' });
+    }
+
+    const coupons = loadStoreCoupons();
+    const newCoupon = {
+      id: `cpn-${Date.now()}`,
+      code: code.trim().toUpperCase(),
+      discountType: discountType || 'percentage',
+      discountValue: Number(discountValue),
+      minOrderAmountETB: Number(minOrderAmountETB) || 0,
+      maxDiscountETB: maxDiscountETB ? Number(maxDiscountETB) : undefined,
+      startDate: startDate || new Date().toISOString().split('T')[0],
+      endDate: endDate || '2026-12-31',
+      usageLimit: Number(usageLimit) || 100,
+      usageCount: 0,
+      isActive: true,
+      applicableCategory: applicableCategory || 'all',
+      description: description || 'Promotional discount coupon',
+    };
+
+    coupons.unshift(newCoupon);
+    saveStoreCoupons(coupons);
+
+    logStoreAudit('COUPON_CREATED', user, newCoupon.id, newCoupon.code, `Created coupon ${newCoupon.code} (${newCoupon.discountValue}${newCoupon.discountType === 'percentage' ? '%' : ' ETB'})`, req.ip);
+
+    res.status(201).json({ success: true, coupon: newCoupon });
+  });
+
+  app.delete('/api/store/admin/coupons/:id', (req: Request, res: Response) => {
+    const user = getUserFromReq(req);
+    if (!user || user.role !== 'admin') {
+      return res.status(403).json({ success: false, error: 'Unauthorized: Admin privileges required.' });
+    }
+
+    const coupons = loadStoreCoupons();
+    const index = coupons.findIndex((c: any) => c.id === req.params.id);
+    if (index !== -1) {
+      coupons.splice(index, 1);
+      saveStoreCoupons(coupons);
+    }
+    res.json({ success: true, message: 'Coupon deleted.' });
+  });
+
+  // 20. Submit Product Review
+  app.post('/api/store/products/:id/reviews', (req: Request, res: Response) => {
+    const { rating, comment, userName, userEmail } = req.body;
+    if (!rating || !comment) {
+      return res.status(400).json({ success: false, error: 'Rating and comment are required.' });
+    }
+
+    const user = getUserFromReq(req);
+    const reviewerName = user ? user.name : (userName || 'Anonymous Scholar');
+    const reviewerEmail = user ? user.email : (userEmail || 'anonymous@wki.edu.et');
+    const reviewerId = user ? user.id : `guest-${Date.now()}`;
+
+    const products = loadStoreProducts();
+    const index = products.findIndex((p: any) => p.id === req.params.id);
+    if (index === -1) {
+      return res.status(404).json({ success: false, error: 'Product not found.' });
+    }
+
+    // Check if verified purchase
+    const perms = loadStorePermissions();
+    const isVerified = perms.some((perm: any) => perm.productId === req.params.id && (perm.userId === reviewerId || perm.userEmail === reviewerEmail));
+
+    const newReview = {
+      id: `rev-${Date.now()}`,
+      productId: req.params.id,
+      userId: reviewerId,
+      userName: reviewerName,
+      userEmail: reviewerEmail,
+      userRole: user?.role || 'Customer',
+      rating: Math.min(5, Math.max(1, Number(rating))),
+      comment: comment.trim(),
+      isVerifiedPurchase: isVerified,
+      createdAt: new Date().toISOString().split('T')[0],
+      isApproved: true,
+    };
+
+    const prod = products[index];
+    const reviews = prod.reviews || [];
+    reviews.unshift(newReview);
+
+    // Recalculate average rating
+    const sumRatings = reviews.reduce((sum: number, r: any) => sum + r.rating, 0);
+    const avgRating = Number((sumRatings / reviews.length).toFixed(1));
+
+    products[index] = {
+      ...prod,
+      reviews,
+      reviewCount: reviews.length,
+      rating: avgRating,
+    };
+
+    saveStoreProducts(products);
+
+    res.status(201).json({
+      success: true,
+      message: 'Review submitted successfully. Thank you for your feedback!',
+      review: newReview,
+      newRating: avgRating,
+    });
+  });
+
+  // 21. Admin Analytics & Revenue Reports
+  app.get('/api/store/admin/analytics', (req: Request, res: Response) => {
+    const user = getUserFromReq(req);
+    if (!user || user.role !== 'admin') {
+      return res.status(403).json({ success: false, error: 'Unauthorized: Admin privileges required.' });
+    }
+
+    const orders = loadStoreOrders();
+    const products = loadStoreProducts();
+    const perms = loadStorePermissions();
+
+    const completedOrders = orders.filter((o: any) => o.status === 'COMPLETED' || o.status === 'PAYMENT_APPROVED');
+    const totalRevenueETB = completedOrders.reduce((sum: number, o: any) => sum + (o.totalETB || 0), 0);
+    const totalDownloads = perms.reduce((sum: number, p: any) => sum + (p.downloadCount || 0), 0);
+
+    // Revenue by category
+    const categoryRevenue: Record<string, number> = {};
+    for (const order of completedOrders) {
+      for (const item of order.items) {
+        const prod = products.find((p: any) => p.id === item.productId);
+        const cat = prod?.category || 'other';
+        categoryRevenue[cat] = (categoryRevenue[cat] || 0) + (item.finalPriceETB || 0);
+      }
+    }
+
+    // Payment method breakdown
+    const paymentMethodStats: Record<string, { count: number; totalETB: number }> = {};
+    for (const order of completedOrders) {
+      const pm = order.paymentMethod || 'Unknown';
+      if (!paymentMethodStats[pm]) {
+        paymentMethodStats[pm] = { count: 0, totalETB: 0 };
+      }
+      paymentMethodStats[pm].count += 1;
+      paymentMethodStats[pm].totalETB += order.totalETB || 0;
+    }
+
+    res.json({
+      success: true,
+      analytics: {
+        totalRevenueETB,
+        totalOrders: orders.length,
+        completedOrdersCount: completedOrders.length,
+        pendingReviewCount: orders.filter((o: any) => o.status === 'PAYMENT_UNDER_REVIEW').length,
+        totalProducts: products.length,
+        totalDownloads,
+        categoryRevenue,
+        paymentMethodStats,
+      },
+    });
+  });
+
+  // 22. Admin Audit Logs
+  app.get('/api/store/admin/audit-logs', (req: Request, res: Response) => {
+    const user = getUserFromReq(req);
+    if (!user || user.role !== 'admin') {
+      return res.status(403).json({ success: false, error: 'Unauthorized: Admin privileges required.' });
+    }
+    const logs = loadStoreAuditLogs();
+    res.json({ success: true, logs });
+  });
+
+  // 23. Get Author Royalties (70% Author / 30% Press Split)
+  app.get('/api/store/author/royalties', (req: Request, res: Response) => {
+    const user = getUserFromReq(req);
+    const authorEmail = user?.email || 'dr.gemechu@wki.edu.et';
+
+    const orders = loadStoreOrders();
+    const products = loadStoreProducts();
+    const payouts = loadStorePayouts();
+
+    const completedOrders = orders.filter((o: any) => o.status === 'COMPLETED' || o.status === 'PAYMENT_APPROVED');
+
+    let totalGrossETB = 0;
+    let authorEarnedETB = 0;
+    let totalSalesCount = 0;
+    const productStatsMap: Record<string, any> = {};
+
+    for (const order of completedOrders) {
+      for (const item of order.items) {
+        const prod = products.find((p: any) => p.id === item.productId);
+        const itemPrice = item.finalPriceETB || 0;
+        totalGrossETB += itemPrice;
+        totalSalesCount += 1;
+
+        const authorShare = Math.round(itemPrice * 0.7);
+        authorEarnedETB += authorShare;
+
+        if (!productStatsMap[item.productId]) {
+          productStatsMap[item.productId] = {
+            productId: item.productId,
+            title: item.title,
+            format: item.fileFormat || 'PDF',
+            price: item.unitPriceETB || itemPrice,
+            sales: 0,
+            gross: 0,
+            authorEarned: 0,
+          };
+        }
+        productStatsMap[item.productId].sales += 1;
+        productStatsMap[item.productId].gross += itemPrice;
+        productStatsMap[item.productId].authorEarned += authorShare;
+      }
+    }
+
+    const myPayouts = payouts.filter((p: any) => !p.authorEmail || p.authorEmail.toLowerCase() === authorEmail.toLowerCase());
+    const totalPaidETB = myPayouts
+      .filter((p: any) => p.status === 'COMPLETED')
+      .reduce((sum: number, p: any) => sum + p.amountETB, 0);
+
+    const pendingPayoutETB = myPayouts
+      .filter((p: any) => p.status === 'PENDING_ADMIN_APPROVAL')
+      .reduce((sum: number, p: any) => sum + p.amountETB, 0);
+
+    const availableBalanceETB = Math.max(0, authorEarnedETB - totalPaidETB - pendingPayoutETB);
+
+    res.json({
+      success: true,
+      summary: {
+        totalGrossETB,
+        authorEarnedETB,
+        totalSalesCount,
+        totalPaidETB,
+        pendingPayoutETB,
+        availableBalanceETB,
+        productBreakdown: Object.values(productStatsMap),
+      },
+      payouts: myPayouts,
+    });
+  });
+
+  // 24. Submit Author Payout Request
+  app.post('/api/store/author/payout-request', (req: Request, res: Response) => {
+    const user = getUserFromReq(req);
+    const { amountETB, bankName, accountNumber, accountHolder } = req.body;
+
+    if (!amountETB || Number(amountETB) <= 0 || !accountNumber) {
+      return res.status(400).json({ success: false, error: 'Valid amount and account details are required.' });
+    }
+
+    const payouts = loadStorePayouts();
+    const newPayout = {
+      id: `payout-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+      authorUserId: user?.id || 'usr-author-01',
+      authorEmail: user?.email || 'dr.gemechu@wki.edu.et',
+      authorName: user?.name || accountHolder || 'Faculty Author',
+      amountETB: Number(amountETB),
+      bankName: bankName || 'Commercial Bank of Ethiopia (CBE)',
+      accountNumber: accountNumber.trim(),
+      accountHolder: accountHolder?.trim() || user?.name || 'Faculty Author',
+      requestedAt: new Date().toISOString(),
+      status: 'PENDING_ADMIN_APPROVAL',
+    };
+
+    payouts.unshift(newPayout);
+    saveStorePayouts(payouts);
+
+    logStoreAudit(
+      'ROYALTY_PAYOUT_REQUESTED',
+      user || { id: newPayout.authorUserId, name: newPayout.authorName, role: 'author' },
+      newPayout.id,
+      `${newPayout.amountETB} ETB (${newPayout.bankName})`,
+      `Author requested royalty withdrawal of ${newPayout.amountETB} ETB to account ${newPayout.accountNumber}.`,
+      req.ip
+    );
+
+    res.status(201).json({
+      success: true,
+      message: 'Royalty payout request recorded successfully.',
+      payout: newPayout,
+    });
+  });
+
+  // 25. Admin Process Royalty Payout Request
+  app.post('/api/store/admin/payouts/:id/process', (req: Request, res: Response) => {
+    const user = getUserFromReq(req);
+    if (!user || user.role !== 'admin') {
+      return res.status(403).json({ success: false, error: 'Unauthorized: Admin privileges required.' });
+    }
+
+    const { action, transactionRef, notes } = req.body;
+    if (action !== 'approve' && action !== 'reject') {
+      return res.status(400).json({ success: false, error: 'Action must be approve or reject.' });
+    }
+
+    const payouts = loadStorePayouts();
+    const index = payouts.findIndex((p: any) => p.id === req.params.id);
+    if (index === -1) {
+      return res.status(404).json({ success: false, error: 'Payout request not found.' });
+    }
+
+    payouts[index] = {
+      ...payouts[index],
+      status: action === 'approve' ? 'COMPLETED' : 'REJECTED',
+      transactionRef: transactionRef || (action === 'approve' ? `CBE-DISBURSED-${Date.now()}` : undefined),
+      adminNotes: notes || '',
+      processedAt: new Date().toISOString(),
+      processedBy: `${user.name} (${user.role})`,
+    };
+
+    saveStorePayouts(payouts);
+
+    logStoreAudit(
+      action === 'approve' ? 'ROYALTY_PAYOUT_APPROVED' : 'ROYALTY_PAYOUT_REJECTED',
+      user,
+      payouts[index].id,
+      `${payouts[index].amountETB} ETB`,
+      `Royalty payout ${action}d for ${payouts[index].authorEmail}.`,
+      req.ip
+    );
+
+    res.json({
+      success: true,
+      message: `Payout request ${action}d successfully.`,
+      payout: payouts[index],
+    });
+  });
+
   // -------------------------------------------------------------
   // VITE & STATIC FILES MIDDLEWARE
   // -------------------------------------------------------------
+  app.use('/src/assets', express.static(path.join(process.cwd(), 'src/assets')));
+
   if (process.env.NODE_ENV !== 'production') {
     const vite = await createViteServer({
       server: { middlewareMode: true },
