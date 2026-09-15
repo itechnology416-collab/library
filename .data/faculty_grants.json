@@ -1,0 +1,212 @@
+[
+  {
+    "id": "grant-01",
+    "title": "Climate Adaptation & Smallholder Market Integration in the Harar Highlands",
+    "funder": "Haramaya University Research & Extension Directorate (RGD)",
+    "grantNumber": "HU-RGD-2025-048",
+    "status": "Awarded & Active",
+    "category": "Institutional (RGD)",
+    "totalBudgetETB": 485000,
+    "spentBudgetETB": 317000,
+    "totalBudgetUSD": 3590,
+    "spentBudgetUSD": 2348,
+    "startDate": "2025-09-01",
+    "endDate": "2026-12-31",
+    "coPIs": [
+      "Prof. Fatuma Ahmed (Co-PI, Soil Sciences)",
+      "Mr. Feysal Hussein (Co-PI, Technology Dissemination)"
+    ],
+    "publicationsCount": 3,
+    "abstract": "Investigates climate-resilient farming practices and market access hurdles across 360 smallholder households in Kersa and Mayu woredas, quantifying econometric welfare gains from shaded agroforestry intercropping.",
+    "milestones": [
+      {
+        "id": "mil-01",
+        "title": "Stratified Household Sampling & Enumerator Training",
+        "dueDate": "2025-11-30",
+        "status": "Completed",
+        "deliverable": "Baseline Survey Protocol & Inception Report"
+      },
+      {
+        "id": "mil-02",
+        "title": "Primary Econometric Fieldwork & FGDs",
+        "dueDate": "2026-03-31",
+        "status": "Completed",
+        "deliverable": "Cleaned Panel Dataset (N=360) in Stata/R format"
+      },
+      {
+        "id": "mil-03",
+        "title": "Midterm Stakeholder Policy Workshop & Policy Brief Dissemination",
+        "dueDate": "2026-10-15",
+        "status": "In Progress",
+        "deliverable": "WKI Press Published Policy Brief & Regional Stakeholder Proceedings"
+      },
+      {
+        "id": "mil-04",
+        "title": "Final Manuscript Submission to HJAS & Endline Reporting",
+        "dueDate": "2026-12-15",
+        "status": "Pending",
+        "deliverable": "Peer-reviewed Journal Manuscript & Financial Audit Certificate"
+      }
+    ],
+    "budgetBreakdown": [
+      {
+        "category": "Personnel & Research Assistants",
+        "allocatedETB": 120000,
+        "spentETB": 100000
+      },
+      {
+        "category": "Field Travel & Household Per Diem",
+        "allocatedETB": 180000,
+        "spentETB": 142000
+      },
+      {
+        "category": "Laboratory Analysis & Software Licenses",
+        "allocatedETB": 45000,
+        "spentETB": 30000
+      },
+      {
+        "category": "Dissemination & WKI Academic Press Publishing",
+        "allocatedETB": 80000,
+        "spentETB": 35000
+      },
+      {
+        "category": "Institutional Overhead & Contingency",
+        "allocatedETB": 60000,
+        "spentETB": 10000
+      }
+    ]
+  },
+  {
+    "id": "grant-02",
+    "title": "Multi-Spectral Remote Sensing for Sorghum Crop Yield Forecasting and Drought Resilience",
+    "funder": "Ethiopian Ministry of Innovation & Technology (MoIT)",
+    "grantNumber": "MoIT-AGR-2026-119",
+    "status": "Proposal Under Review",
+    "category": "National (MoIT/MoE)",
+    "totalBudgetETB": 1250000,
+    "spentBudgetETB": 0,
+    "totalBudgetUSD": 9250,
+    "spentBudgetUSD": 0,
+    "startDate": "2026-11-01",
+    "endDate": "2028-06-30",
+    "coPIs": [
+      "Dr. Tadesse Bekele (Agronomy)",
+      "Dr. Sisay Lemma (GIS & Remote Sensing)"
+    ],
+    "publicationsCount": 0,
+    "abstract": "Leverages Sentinel-2 multispectral imagery alongside machine learning regression algorithms to develop real-time phenological yield forecasting models for rainfed sorghum in eastern Ethiopia.",
+    "milestones": [
+      {
+        "id": "mil-201",
+        "title": "MoIT Technical Evaluation & Funding Agreement Signing",
+        "dueDate": "2026-10-30",
+        "status": "In Progress",
+        "deliverable": "Signed Bilateral Grant Agreement"
+      },
+      {
+        "id": "mil-202",
+        "title": "Ground-Truthing Field Radiometer Station Deployment",
+        "dueDate": "2027-02-28",
+        "status": "Pending",
+        "deliverable": "Radiometric Calibration Report"
+      }
+    ],
+    "budgetBreakdown": [
+      {
+        "category": "Personnel & Research Assistants",
+        "allocatedETB": 350000,
+        "spentETB": 0
+      },
+      {
+        "category": "Field Travel & Household Per Diem",
+        "allocatedETB": 300000,
+        "spentETB": 0
+      },
+      {
+        "category": "Laboratory Analysis & Software Licenses",
+        "allocatedETB": 250000,
+        "spentETB": 0
+      },
+      {
+        "category": "Dissemination & WKI Academic Press Publishing",
+        "allocatedETB": 150000,
+        "spentETB": 0
+      },
+      {
+        "category": "Institutional Overhead & Contingency",
+        "allocatedETB": 200000,
+        "spentETB": 0
+      }
+    ]
+  },
+  {
+    "id": "grant-03",
+    "title": "Agro-Ecological Valuation and Value Chain Optimization of Harar Highland Coffee Under Shaded Agroforestry",
+    "funder": "USAID / Feed the Future Collaborative Consortium",
+    "grantNumber": "USAID-HU-FTF-2024-012",
+    "status": "Milestone Completed",
+    "category": "International Bilateral",
+    "totalBudgetETB": 1715000,
+    "spentBudgetETB": 1580000,
+    "totalBudgetUSD": 12000,
+    "spentBudgetUSD": 11050,
+    "startDate": "2024-03-01",
+    "endDate": "2026-06-30",
+    "coPIs": [
+      "Prof. Mengistu Ketema",
+      "Dr. Almaz Negash"
+    ],
+    "publicationsCount": 4,
+    "abstract": "Quantified consumer willingness-to-pay and organic certification premiums for traditional Harar coffee cultivated under indigenous shade canopies, delivering export market linkages for 1,200 cooperative farmers.",
+    "milestones": [
+      {
+        "id": "mil-301",
+        "title": "Cooperative Farmer Baseline & Soil Carbon Audits",
+        "dueDate": "2024-08-31",
+        "status": "Completed",
+        "deliverable": "Verified Carbon Baseline Dossier"
+      },
+      {
+        "id": "mil-302",
+        "title": "Export Grade Sensory Evaluations & Price Premium Econometrics",
+        "dueDate": "2025-05-30",
+        "status": "Completed",
+        "deliverable": "Cup of Excellence Technical Evaluation Report"
+      },
+      {
+        "id": "mil-303",
+        "title": "Dissemination Workshop at Haramaya University & WKI Monograph Release",
+        "dueDate": "2026-05-15",
+        "status": "Completed",
+        "deliverable": "Published Institutional Research Monograph"
+      }
+    ],
+    "budgetBreakdown": [
+      {
+        "category": "Personnel & Research Assistants",
+        "allocatedETB": 450000,
+        "spentETB": 430000
+      },
+      {
+        "category": "Field Travel & Household Per Diem",
+        "allocatedETB": 500000,
+        "spentETB": 480000
+      },
+      {
+        "category": "Laboratory Analysis & Software Licenses",
+        "allocatedETB": 350000,
+        "spentETB": 320000
+      },
+      {
+        "category": "Dissemination & WKI Academic Press Publishing",
+        "allocatedETB": 240000,
+        "spentETB": 220000
+      },
+      {
+        "category": "Institutional Overhead & Contingency",
+        "allocatedETB": 175000,
+        "spentETB": 130000
+      }
+    ]
+  }
+]

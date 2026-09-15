@@ -1,7 +1,21 @@
 import React, { useState, useEffect } from 'react';
+import {
+  Send,
+  Calendar,
+  Hash,
+  User,
+  Phone,
+  Building,
+  FileText,
+  AtSign,
+  CheckCircle2,
+  ExternalLink,
+  Sparkles,
+} from 'lucide-react';
 import { Language, ServiceCategory, ServiceRequest } from '../types';
 import { OFFICIAL_BRAND } from '../data/initialData';
 import { translations } from '../utils/translations';
+import { Modal, Input, Select, Textarea, FileUploader, Button, Badge } from './ui';
 
 interface ServiceRequestModalProps {
   currentLanguage: Language;
@@ -29,7 +43,9 @@ export const ServiceRequestModal: React.FC<ServiceRequestModalProps> = ({
   const [description, setDescription] = useState<string>('');
   const [pages, setPages] = useState<number>(initialPages);
   const [deadline, setDeadline] = useState<string>('');
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [fileName, setFileName] = useState<string>('');
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [submittedRequest, setSubmittedRequest] = useState<ServiceRequest | null>(null);
 
   const t = translations[currentLanguage];
@@ -39,321 +55,292 @@ export const ServiceRequestModal: React.FC<ServiceRequestModalProps> = ({
     if (initialPages) setPages(initialPages);
   }, [initialCategory, initialPages]);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setFileName(e.target.files[0].name);
+  const handleFilesSelected = (files: File[]) => {
+    setSelectedFiles(files);
+    if (files.length > 0) {
+      setFileName(files[0].name);
+    } else {
+      setFileName('');
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
+
+    const generatedId = `REQ-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
 
     const newReq: ServiceRequest = {
-      id: `REQ-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`,
-      clientName: clientName || 'Anonymous Scholar',
-      affiliation: affiliation || 'Haramaya University Associate',
-      phone: phone || '+251 927 650 724',
-      telegram: telegram || '@FEYSAL_8',
-      email: email || undefined,
+      id: generatedId,
+      clientName: clientName.trim() || 'Anonymous Scholar',
+      affiliation: affiliation.trim() || 'Haramaya University Associate',
+      phone: phone.trim() || '+251 927 650 724',
+      telegram: telegram.trim() || '@FEYSAL_8',
+      email: email.trim() || undefined,
       serviceCategory,
       targetLanguage,
-      projectTitle: projectTitle || `${serviceCategory.toUpperCase()} Publishing Brief`,
-      description: description || 'Academic materials development project.',
+      projectTitle: projectTitle.trim() || `${serviceCategory.toUpperCase()} Publishing Brief`,
+      description: description.trim() || 'Academic materials development project.',
       estimatedPages: pages,
-      expectedDeadline: deadline || 'Within 7 Business Days',
+      expectedDeadline: deadline || 'Standard (3-7 Business Days)',
       status: 'Submitted',
       createdAt: new Date().toISOString().split('T')[0],
       fileName: fileName || undefined,
     };
 
+    try {
+      const res = await fetch('/api/requests', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newReq),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.request) {
+          setSubmittedRequest(data.request);
+          onSubmitSuccess(data.request);
+          setIsSubmitting(false);
+          return;
+        }
+      }
+    } catch (err) {
+      console.warn('API submission failed, persisting locally:', err);
+    }
+
     setSubmittedRequest(newReq);
     onSubmitSuccess(newReq);
+    setIsSubmitting(false);
   };
 
+  const serviceOptions = [
+    { value: 'ppt', label: 'PowerPoint / Thesis & Defense Presentation' },
+    { value: 'english_book', label: 'English Book Writing & Pedagogical Manual' },
+    { value: 'arabic_book', label: 'Arabic Typing & Book Development (Tajweed/Islamic)' },
+    { value: 'oromoo_book', label: 'Afaan Oromoo Writing & Seenaa / Aadaa Books' },
+    { value: 'amharic_book', label: 'Amharic Writing & Research Composition' },
+    { value: 'translation', label: 'Multilingual Translation (4-Way Cross-Lingual)' },
+    { value: 'editing', label: 'Proofreading & Thesis Linguistic Polish' },
+    { value: 'formatting', label: 'Book Formatting & Pre-Press Typesetting' },
+    { value: 'elearning', label: 'Educational Content & Curricula Development' },
+  ];
+
+  const languageOptions = [
+    { value: 'en', label: 'English (Academic & Research)' },
+    { value: 'or', label: 'Afaan Oromoo' },
+    { value: 'am', label: 'አማርኛ (Amharic)' },
+    { value: 'ar', label: 'العربية (Arabic RTL)' },
+  ];
+
   return (
-    <div
-      className="fixed inset-0 z-50 bg-inverse-surface/60 backdrop-blur-sm p-4 flex items-center justify-center overflow-y-auto animate-in fade-in duration-150"
-      id="serviceOrderModal"
-    >
-      <div className="bg-surface w-full max-w-lg rounded-2xl p-space-md md:p-6 shadow-2xl border border-outline-variant/30 flex flex-col gap-space-sm my-auto max-h-[92vh] overflow-y-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between pb-2 border-b border-outline-variant/15">
-          <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-secondary text-[24px]">
-              history_edu
-            </span>
-            <h3 className="font-title-md text-title-md text-on-surface font-bold">
-              {t.submitRequestModalTitle}
-            </h3>
+    <Modal
+      isOpen={true}
+      onClose={onClose}
+      size="lg"
+      title={
+        <div className="flex items-center gap-2 text-on-surface">
+          <div className="w-8 h-8 rounded-lg bg-secondary/10 text-secondary flex items-center justify-center">
+            <Sparkles className="w-4 h-4" />
           </div>
-          <button
-            className="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-on-surface hover:bg-surface-container-high transition-colors cursor-pointer"
-            onClick={onClose}
-          >
-            <span className="material-symbols-outlined text-[18px]">close</span>
-          </button>
+          <span className="font-bold text-base md:text-lg">
+            {submittedRequest ? 'Request Dispatched Successfully' : t.submitRequestModalTitle}
+          </span>
         </div>
+      }
+      description={
+        submittedRequest
+          ? 'Your project brief has been securely queued in the editorial desk system.'
+          : t.submitRequestDesc
+      }
+    >
+      {submittedRequest ? (
+        /* Confirmation Screen */
+        <div className="flex flex-col items-center gap-5 text-center py-2">
+          <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center animate-in zoom-in-50 duration-300">
+            <CheckCircle2 className="w-9 h-9" />
+          </div>
 
-        {/* Confirmation Screen if submitted */}
-        {submittedRequest ? (
-          <div className="p-4 rounded-xl bg-surface-container text-center flex flex-col items-center gap-3">
-            <div className="w-12 h-12 rounded-full bg-tertiary-fixed text-on-tertiary-fixed-variant flex items-center justify-center">
-              <span className="material-symbols-outlined text-[28px]">task_alt</span>
-            </div>
-            <div>
-              <h4 className="font-title-md text-title-md font-bold text-on-surface">
-                Request Dispatched Successfully!
-              </h4>
-              <p className="text-xs text-secondary font-mono font-bold mt-1">
-                Tracking ID: {submittedRequest.id}
-              </p>
-              <p className="font-body-sm text-body-sm text-on-surface-variant mt-2">
-                Thank you, <strong>{submittedRequest.clientName}</strong>. Your project brief has
-                been securely registered in the academic desk queue.
-              </p>
-            </div>
+          <div>
+            <Badge variant="secondary" className="px-3 py-1 font-mono text-xs mb-2">
+              TRACKING ID: {submittedRequest.id}
+            </Badge>
+            <h4 className="text-lg font-bold text-on-surface">
+              Brief Dispatched to Mr. Feysal Hussein
+            </h4>
+            <p className="text-xs text-on-surface-variant max-w-md mx-auto mt-1">
+              Thank you, <strong>{submittedRequest.clientName}</strong>. Your project brief has been
+              registered in our academic desk workflow and assigned initial review priority.
+            </p>
+          </div>
 
-            <div className="w-full p-3 rounded-lg bg-surface-container-lowest text-left text-xs space-y-1">
-              <div className="flex justify-between">
-                <span className="text-on-surface-variant">Service:</span>
-                <span className="font-bold text-on-surface uppercase">
-                  {submittedRequest.serviceCategory}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-on-surface-variant">Volume:</span>
-                <span className="font-bold text-on-surface">
-                  {submittedRequest.estimatedPages} Pages / Slides
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-on-surface-variant">Status:</span>
-                <span className="px-1.5 py-0.5 rounded bg-secondary-fixed text-on-secondary-fixed font-bold">
-                  {submittedRequest.status}
-                </span>
-              </div>
+          <div className="w-full p-4 rounded-xl bg-surface-container-low border border-outline-variant/20 text-left text-xs space-y-2.5">
+            <div className="flex justify-between items-center border-b border-outline-variant/10 pb-2">
+              <span className="text-on-surface-variant">Service Category:</span>
+              <span className="font-bold text-on-surface uppercase">
+                {submittedRequest.serviceCategory.replace('_', ' ')}
+              </span>
             </div>
-
-            <div className="flex flex-col sm:flex-row gap-2 w-full pt-1">
-              <a
-                href={OFFICIAL_BRAND.telegramUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex-1 py-2.5 px-3 rounded-lg bg-surface-variant text-on-surface font-semibold text-xs flex items-center justify-center gap-1.5 hover:bg-surface-container-highest transition-colors"
-              >
-                <span className="material-symbols-outlined text-[16px]">send</span>
-                <span>Open in Telegram (@FEYSAL_8)</span>
-              </a>
-              <button
-                onClick={onClose}
-                className="flex-1 py-2.5 px-3 rounded-lg bg-secondary text-on-secondary font-semibold text-xs flex items-center justify-center cursor-pointer hover:opacity-95 transition-opacity"
-              >
-                Done
-              </button>
+            <div className="flex justify-between items-center border-b border-outline-variant/10 pb-2">
+              <span className="text-on-surface-variant">Project Title:</span>
+              <span className="font-semibold text-on-surface truncate max-w-[200px]">
+                {submittedRequest.projectTitle}
+              </span>
+            </div>
+            <div className="flex justify-between items-center border-b border-outline-variant/10 pb-2">
+              <span className="text-on-surface-variant">Estimated Volume:</span>
+              <span className="font-bold text-on-surface">
+                {submittedRequest.estimatedPages} Pages / Slides
+              </span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-on-surface-variant">Current Status:</span>
+              <Badge variant="warning">{submittedRequest.status}</Badge>
             </div>
           </div>
-        ) : (
-          /* Submission Form */
-          <>
-            <p className="font-body-sm text-body-sm text-on-surface-variant">
-              {t.submitRequestDesc}
+
+          <div className="flex flex-col sm:flex-row gap-3 w-full pt-2">
+            <a
+              href={OFFICIAL_BRAND.telegramUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 py-2.5 px-4 rounded-xl bg-[#0088cc]/10 hover:bg-[#0088cc]/20 text-[#0088cc] font-semibold text-xs flex items-center justify-center gap-2 transition-colors"
+            >
+              <Send className="w-4 h-4" />
+              <span>Connect on Telegram (@FEYSAL_8)</span>
+              <ExternalLink className="w-3.5 h-3.5 ml-auto" />
+            </a>
+            <Button variant="secondary" onClick={onClose} className="flex-1 text-xs">
+              Done & Track in Desk
+            </Button>
+          </div>
+        </div>
+      ) : (
+        /* Submission Form */
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4" id="orderForm">
+          {/* Category & Language Selection */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <Select
+              label="Service Category"
+              value={serviceCategory}
+              options={serviceOptions}
+              onChange={(e) => setServiceCategory(e.target.value as ServiceCategory)}
+              required
+            />
+            <Select
+              label="Primary Target Language"
+              value={targetLanguage}
+              options={languageOptions}
+              onChange={(e) => setTargetLanguage(e.target.value as Language)}
+              required
+            />
+          </div>
+
+          {/* Client Info */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <Input
+              label="Your Full Name"
+              placeholder="e.g. Dr. Abebe / Chaltu T."
+              value={clientName}
+              onChange={(e) => setClientName(e.target.value)}
+              leftIcon={<User className="w-4 h-4" />}
+              required
+            />
+            <Input
+              label="University / Department / Institution"
+              placeholder="e.g. Haramaya University, Agri Dept."
+              value={affiliation}
+              onChange={(e) => setAffiliation(e.target.value)}
+              leftIcon={<Building className="w-4 h-4" />}
+            />
+          </div>
+
+          {/* Contact Numbers */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <Input
+              label="Phone Contact"
+              placeholder="+251 9... or 09..."
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              leftIcon={<Phone className="w-4 h-4" />}
+              type="tel"
+              required
+            />
+            <Input
+              label="Telegram Handle (Direct Desk)"
+              placeholder="@username"
+              value={telegram}
+              onChange={(e) => setTelegram(e.target.value)}
+              leftIcon={<AtSign className="w-4 h-4" />}
+            />
+          </div>
+
+          {/* Project Title */}
+          <Input
+            label="Project Title or Subject"
+            placeholder="e.g. Master's Thesis Presentation on Soil Nitrogen Dynamics"
+            value={projectTitle}
+            onChange={(e) => setProjectTitle(e.target.value)}
+            leftIcon={<FileText className="w-4 h-4" />}
+            required
+          />
+
+          {/* Volume and Expected Deadline */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <Input
+              label="Estimated Pages / Slides"
+              type="number"
+              min={1}
+              max={1000}
+              value={pages}
+              onChange={(e) => setPages(parseInt(e.target.value) || 1)}
+              leftIcon={<Hash className="w-4 h-4" />}
+              required
+            />
+            <Input
+              label="Expected Deadline"
+              type="date"
+              value={deadline}
+              onChange={(e) => setDeadline(e.target.value)}
+              leftIcon={<Calendar className="w-4 h-4" />}
+            />
+          </div>
+
+          {/* Instructions */}
+          <Textarea
+            label="Requirements & Detailed Instructions"
+            placeholder="Describe your target audience, required slide template, chapter guidelines, translation nuances, or specific formatting rules..."
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            rows={3}
+          />
+
+          {/* File Attachment using custom FileUploader */}
+          <FileUploader
+            label="Attach Outline / Draft Manuscript"
+            helperText="Support for PPTX, DOCX, PDF, and TXT"
+            accept=".pdf,.docx,.pptx,.txt"
+            maxSizeMB={25}
+            onFilesSelected={handleFilesSelected}
+            selectedFiles={selectedFiles}
+          />
+
+          {/* Submit Button */}
+          <div className="pt-2">
+            <Button
+              type="submit"
+              variant="secondary"
+              size="lg"
+              className="w-full justify-center shadow-md text-xs font-bold"
+              disabled={isSubmitting}
+            >
+              <Send className="w-4 h-4 mr-2" />
+              <span>{isSubmitting ? 'Dispatching...' : t.dispatchBriefBtn}</span>
+            </Button>
+            <p className="text-[11px] text-on-surface-variant text-center mt-2">
+              Confidential academic desk transmission • Direct line with Mr. Feysal Hussein
             </p>
-
-            <form onSubmit={handleSubmit} className="flex flex-col gap-3" id="orderForm">
-              {/* Category & Language Selection */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                <div>
-                  <label className="font-label-sm text-label-sm text-on-surface font-semibold mb-1 block">
-                    Service Category
-                  </label>
-                  <select
-                    value={serviceCategory}
-                    onChange={(e) => setServiceCategory(e.target.value as ServiceCategory)}
-                    className="w-full h-10 px-3 rounded-lg bg-surface-container text-on-surface text-body-sm font-body-sm border border-outline-variant/30 focus:border-secondary focus:outline-none"
-                  >
-                    <option value="ppt">PowerPoint / Thesis Presentation</option>
-                    <option value="english_book">English Book / Workbook</option>
-                    <option value="oromoo_book">Afaan Oromoo Book / Seenaa</option>
-                    <option value="arabic_book">Arabic Typing & Tajweed</option>
-                    <option value="amharic_book">Amharic Book / Text Writing</option>
-                    <option value="translation">Multilingual Translation (4-Way)</option>
-                    <option value="editing">Proofreading & Thesis Editing</option>
-                    <option value="formatting">Book & Monograph Formatting</option>
-                    <option value="elearning">E-Learning Curricula Development</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="font-label-sm text-label-sm text-on-surface font-semibold mb-1 block">
-                    Primary Language
-                  </label>
-                  <select
-                    value={targetLanguage}
-                    onChange={(e) => setTargetLanguage(e.target.value as Language)}
-                    className="w-full h-10 px-3 rounded-lg bg-surface-container text-on-surface text-body-sm font-body-sm border border-outline-variant/30 focus:border-secondary focus:outline-none"
-                  >
-                    <option value="en">English (Academic / Research)</option>
-                    <option value="or">Afaan Oromoo</option>
-                    <option value="am">አማርኛ (Amharic)</option>
-                    <option value="ar">العربية (Arabic RTL)</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* Client Info */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                <div>
-                  <label className="font-label-sm text-label-sm text-on-surface font-semibold mb-1 block">
-                    Your Name
-                  </label>
-                  <input
-                    value={clientName}
-                    onChange={(e) => setClientName(e.target.value)}
-                    className="w-full h-10 px-3 rounded-lg bg-surface-container text-on-surface text-body-sm font-body-sm border border-outline-variant/30 placeholder:text-outline focus:border-secondary focus:outline-none"
-                    placeholder="e.g. Dr. Abebe / Chaltu T."
-                    required
-                    type="text"
-                  />
-                </div>
-
-                <div>
-                  <label className="font-label-sm text-label-sm text-on-surface font-semibold mb-1 block">
-                    University / Department
-                  </label>
-                  <input
-                    value={affiliation}
-                    onChange={(e) => setAffiliation(e.target.value)}
-                    className="w-full h-10 px-3 rounded-lg bg-surface-container text-on-surface text-body-sm font-body-sm border border-outline-variant/30 placeholder:text-outline focus:border-secondary focus:outline-none"
-                    placeholder="e.g. Haramaya Agri Dept."
-                    type="text"
-                  />
-                </div>
-              </div>
-
-              {/* Contact numbers */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                <div>
-                  <label className="font-label-sm text-label-sm text-on-surface font-semibold mb-1 block">
-                    Phone Contact
-                  </label>
-                  <input
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    className="w-full h-10 px-3 rounded-lg bg-surface-container text-on-surface text-body-sm font-body-sm border border-outline-variant/30 placeholder:text-outline focus:border-secondary focus:outline-none"
-                    placeholder="+251 9..."
-                    required
-                    type="tel"
-                  />
-                </div>
-
-                <div>
-                  <label className="font-label-sm text-label-sm text-on-surface font-semibold mb-1 block">
-                    Telegram Handle (Direct Desk)
-                  </label>
-                  <input
-                    value={telegram}
-                    onChange={(e) => setTelegram(e.target.value)}
-                    className="w-full h-10 px-3 rounded-lg bg-surface-container text-on-surface text-body-sm font-body-sm border border-outline-variant/30 placeholder:text-outline focus:border-secondary focus:outline-none"
-                    placeholder="@username"
-                    type="text"
-                  />
-                </div>
-              </div>
-
-              {/* Project Title & Scope */}
-              <div>
-                <label className="font-label-sm text-label-sm text-on-surface font-semibold mb-1 block">
-                  Project Title or Subject
-                </label>
-                <input
-                  value={projectTitle}
-                  onChange={(e) => setProjectTitle(e.target.value)}
-                  className="w-full h-10 px-3 rounded-lg bg-surface-container text-on-surface text-body-sm font-body-sm border border-outline-variant/30 placeholder:text-outline focus:border-secondary focus:outline-none"
-                  placeholder="e.g. Master's Thesis Presentation on Soil Nitrogen"
-                  required
-                  type="text"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <label className="font-label-sm text-label-sm text-on-surface font-semibold mb-1 block">
-                    Estimated Pages / Slides
-                  </label>
-                  <input
-                    value={pages}
-                    onChange={(e) => setPages(parseInt(e.target.value) || 5)}
-                    className="w-full h-10 px-3 rounded-lg bg-surface-container text-on-surface text-body-sm font-body-sm border border-outline-variant/30 focus:border-secondary focus:outline-none"
-                    type="number"
-                    min="1"
-                    max="500"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="font-label-sm text-label-sm text-on-surface font-semibold mb-1 block">
-                    Expected Deadline
-                  </label>
-                  <input
-                    value={deadline}
-                    onChange={(e) => setDeadline(e.target.value)}
-                    className="w-full h-10 px-3 rounded-lg bg-surface-container text-on-surface text-body-sm font-body-sm border border-outline-variant/30 focus:border-secondary focus:outline-none"
-                    type="date"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="font-label-sm text-label-sm text-on-surface font-semibold mb-1 block">
-                  Requirements & Instructions
-                </label>
-                <textarea
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  rows={2}
-                  className="w-full p-2.5 rounded-lg bg-surface-container text-on-surface text-body-sm font-body-sm border border-outline-variant/30 placeholder:text-outline focus:border-secondary focus:outline-none"
-                  placeholder="Describe your target audience, required slide template, chapter guidelines, or specific formatting rules..."
-                />
-              </div>
-
-              {/* File Attachment */}
-              <div className="p-2.5 rounded-lg border border-dashed border-outline-variant/60 bg-surface-container-lowest flex items-center justify-between">
-                <div className="flex items-center gap-2 min-w-0">
-                  <span className="material-symbols-outlined text-secondary text-[20px]">
-                    attach_file
-                  </span>
-                  <div className="flex flex-col min-w-0">
-                    <span className="text-xs font-semibold text-on-surface truncate">
-                      {fileName || 'Attach Outline / Draft File'}
-                    </span>
-                    <span className="text-[10px] text-on-surface-variant">
-                      PPTX, DOCX, PDF up to 25MB
-                    </span>
-                  </div>
-                </div>
-                <label className="px-2.5 py-1 rounded bg-surface-container text-xs font-semibold text-secondary hover:bg-surface-container-high cursor-pointer">
-                  Browse
-                  <input
-                    type="file"
-                    className="hidden"
-                    onChange={handleFileChange}
-                    accept=".pdf,.docx,.pptx,.txt"
-                  />
-                </label>
-              </div>
-
-              {/* Submit Button */}
-              <button
-                className="mt-1 w-full h-11 rounded-lg bg-secondary text-on-secondary font-label-lg text-label-lg font-bold flex items-center justify-center gap-2 shadow-md hover:brightness-105 active:scale-[0.99] transition-all cursor-pointer"
-                type="submit"
-              >
-                <span className="material-symbols-outlined text-[18px]">send</span>
-                <span>{t.dispatchBriefBtn}</span>
-              </button>
-            </form>
-          </>
-        )}
-      </div>
-    </div>
+          </div>
+        </form>
+      )}
+    </Modal>
   );
 };

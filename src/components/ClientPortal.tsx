@@ -12,6 +12,7 @@ import { OFFICIAL_BRAND } from '../data/initialData';
 import { InteractiveProofModal } from './InteractiveProofModal';
 import { PaymentVerificationModal } from './PaymentVerificationModal';
 import { ApprovalCertificateModal } from './ApprovalCertificateModal';
+import { Modal, Input, Select, Textarea, Button, Badge } from './ui';
 
 interface ClientPortalProps {
   requests: ServiceRequest[];
@@ -1594,210 +1595,154 @@ export const ClientPortal: React.FC<ClientPortalProps> = ({
 
       {/* Supplementary Upload Modal */}
       {isSupplementaryModalOpen && selectedRequest && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="w-full max-w-md bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-6 space-y-4 shadow-xl animate-in zoom-in-95 duration-150">
-            <div className="flex items-center justify-between pb-2 border-b border-outline-variant/20">
-              <h3 className="font-title-md text-title-md font-bold text-on-surface">
-                Attach Supplementary Research File
-              </h3>
-              <button
+        <Modal
+          isOpen={true}
+          onClose={() => setIsSupplementaryModalOpen(false)}
+          size="md"
+          title="Attach Supplementary Research File"
+          description="Upload experimental datasets, high-resolution microscope micrographs, or faculty defense guidelines."
+        >
+          <form onSubmit={handleAddSupplementaryFile} className="space-y-3.5">
+            <Input
+              label="File Name / Description"
+              required
+              placeholder="e.g. soil_sample_microscope_figures.zip"
+              value={supplementaryName}
+              onChange={(e) => setSupplementaryName(e.target.value)}
+            />
+
+            <Select
+              label="Category"
+              value={supplementaryCategory}
+              options={[
+                { value: 'Raw Dataset', label: 'Raw Dataset (.xlsx / .csv)' },
+                { value: 'High-Res Figure', label: 'High-Res Figure / Micrograph (.png / .tif)' },
+                { value: 'Faculty Guidelines', label: 'Faculty Defense Guidelines (.pdf)' },
+                { value: 'Revised Text', label: 'Revised Chapter Text (.docx)' },
+              ]}
+              onChange={(e) => setSupplementaryCategory(e.target.value as any)}
+            />
+
+            <div className="flex items-center justify-end gap-2 pt-2">
+              <Button
+                type="button"
+                variant="outline"
                 onClick={() => setIsSupplementaryModalOpen(false)}
-                className="w-8 h-8 rounded-full hover:bg-surface-container flex items-center justify-center text-on-surface cursor-pointer"
+                className="text-xs"
               >
-                <span className="material-symbols-outlined text-[18px]">close</span>
-              </button>
+                Cancel
+              </Button>
+              <Button type="submit" variant="secondary" className="text-xs font-bold">
+                Upload & Attach
+              </Button>
             </div>
-
-            <form onSubmit={handleAddSupplementaryFile} className="space-y-3">
-              <div className="space-y-1">
-                <label className="text-xs font-bold text-on-surface">File Name / Description *</label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. soil_sample_microscope_figures.zip"
-                  value={supplementaryName}
-                  onChange={(e) => setSupplementaryName(e.target.value)}
-                  className="w-full p-2.5 rounded-xl bg-surface-container text-xs text-on-surface border border-outline-variant/30 focus:border-secondary focus:outline-none"
-                />
-              </div>
-
-              <div className="space-y-1">
-                <label className="text-xs font-bold text-on-surface">Category</label>
-                <select
-                  value={supplementaryCategory}
-                  onChange={(e) => setSupplementaryCategory(e.target.value as any)}
-                  className="w-full p-2.5 rounded-xl bg-surface-container text-xs text-on-surface border border-outline-variant/30 focus:border-secondary focus:outline-none"
-                >
-                  <option value="Raw Dataset">Raw Dataset (.xlsx / .csv)</option>
-                  <option value="High-Res Figure">High-Res Figure / Micrograph (.png / .tif)</option>
-                  <option value="Faculty Guidelines">Faculty Defense Guidelines (.pdf)</option>
-                  <option value="Revised Text">Revised Chapter Text (.docx)</option>
-                </select>
-              </div>
-
-              <div className="flex items-center justify-end gap-2 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setIsSupplementaryModalOpen(false)}
-                  className="px-4 py-2 rounded-xl bg-surface-container text-on-surface text-xs font-bold hover:bg-surface-container-high transition-colors cursor-pointer"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-5 py-2 rounded-xl bg-secondary text-on-secondary text-xs font-bold hover:brightness-105 transition-all cursor-pointer shadow-xs"
-                >
-                  Upload & Attach
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+          </form>
+        </Modal>
       )}
 
       {/* Revision Modal */}
       {isRevisionModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="w-full max-w-lg bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-6 space-y-4 shadow-xl animate-in zoom-in-95 duration-150">
-            <div className="flex items-center justify-between pb-2 border-b border-outline-variant/20">
-              <h3 className="font-title-md text-title-md font-bold text-on-surface">
-                Request Manuscript Revision
-              </h3>
-              <button
+        <Modal
+          isOpen={true}
+          onClose={() => setIsRevisionModalOpen(false)}
+          size="md"
+          title="Request Manuscript Revision"
+          description="Specify the exact pages, slides, or chapters you need updated. Mr. Feysal Hussein will review and implement the changes."
+        >
+          <form onSubmit={handleSubmitRevision} className="space-y-4">
+            <Textarea
+              label="Revision Details & Instructions"
+              rows={4}
+              required
+              placeholder="e.g. Please increase font size on Slide 18 data table, adjust color for Control Group to navy blue, and verify Equation 4..."
+              value={revisionNotes}
+              onChange={(e) => setRevisionNotes(e.target.value)}
+            />
+
+            <div className="flex items-center justify-end gap-2 pt-2">
+              <Button
+                type="button"
+                variant="outline"
                 onClick={() => setIsRevisionModalOpen(false)}
-                className="w-8 h-8 rounded-full hover:bg-surface-container flex items-center justify-center text-on-surface cursor-pointer"
+                className="text-xs"
               >
-                <span className="material-symbols-outlined text-[18px]">close</span>
-              </button>
+                Cancel
+              </Button>
+              <Button type="submit" variant="secondary" className="text-xs font-bold bg-amber-600 hover:bg-amber-700 text-white">
+                Submit Revision Request
+              </Button>
             </div>
-
-            <p className="text-xs text-on-surface-variant">
-              Specify the pages, slides, or chapters you need updated. Mr. Feysal Hussein will review and implement the changes.
-            </p>
-
-            <form onSubmit={handleSubmitRevision} className="space-y-4">
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-on-surface">
-                  Revision Details & Instructions *
-                </label>
-                <textarea
-                  rows={4}
-                  required
-                  placeholder="e.g. Please increase font size on Slide 18 data table and adjust color for Control Group..."
-                  value={revisionNotes}
-                  onChange={(e) => setRevisionNotes(e.target.value)}
-                  className="w-full p-3 rounded-xl bg-surface-container text-xs text-on-surface border border-outline-variant/30 focus:border-secondary focus:outline-none"
-                />
-              </div>
-
-              <div className="flex items-center justify-end gap-2 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setIsRevisionModalOpen(false)}
-                  className="px-4 py-2 rounded-xl bg-surface-container text-on-surface text-xs font-bold hover:bg-surface-container-high transition-colors cursor-pointer"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-5 py-2 rounded-xl bg-amber-500 text-white text-xs font-bold hover:brightness-105 transition-all cursor-pointer shadow-xs"
-                >
-                  Submit Revision Request
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+          </form>
+        </Modal>
       )}
 
       {/* Auth Modal (Login / Register) */}
       {isAuthModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="w-full max-w-md bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-6 space-y-4 shadow-xl animate-in zoom-in-95 duration-150">
-            <div className="flex items-center justify-between pb-2 border-b border-outline-variant/20">
-              <h3 className="font-title-md text-title-md font-bold text-on-surface">
-                {authMode === 'login' ? 'Client Sign In' : 'Create Scholar Account'}
-              </h3>
+        <Modal
+          isOpen={true}
+          onClose={() => setIsAuthModalOpen(false)}
+          size="md"
+          title={authMode === 'login' ? 'Client Scholar Sign In' : 'Create Scholar Account'}
+          description="Access your confidential defense slides, thesis drafts, and Ethiopian bank settlement vouchers."
+        >
+          <form onSubmit={handleLoginSubmit} className="space-y-3.5">
+            {authMode === 'register' && (
+              <>
+                <Input
+                  label="Full Name"
+                  required
+                  placeholder="e.g. Dr. Abebe Kebede"
+                  value={authForm.name}
+                  onChange={(e) => setAuthForm({ ...authForm, name: e.target.value })}
+                />
+                <Input
+                  label="University / Department / Organization"
+                  placeholder="e.g. Haramaya University, College of Agriculture"
+                  value={authForm.affiliation}
+                  onChange={(e) => setAuthForm({ ...authForm, affiliation: e.target.value })}
+                />
+              </>
+            )}
+
+            <Input
+              label="Email Address"
+              type="email"
+              required
+              placeholder="scholar@haramaya.edu.et"
+              value={authForm.email}
+              onChange={(e) => setAuthForm({ ...authForm, email: e.target.value })}
+            />
+
+            <Input
+              label="Password"
+              type="password"
+              required
+              placeholder="••••••••"
+              value={authForm.password}
+              onChange={(e) => setAuthForm({ ...authForm, password: e.target.value })}
+            />
+
+            <Button
+              type="submit"
+              variant="secondary"
+              className="w-full justify-center text-xs font-bold shadow-xs mt-2"
+            >
+              {authMode === 'login' ? 'Sign In to Portal' : 'Register Account'}
+            </Button>
+
+            <div className="text-center pt-2">
               <button
-                onClick={() => setIsAuthModalOpen(false)}
-                className="w-8 h-8 rounded-full hover:bg-surface-container flex items-center justify-center text-on-surface cursor-pointer"
+                type="button"
+                onClick={() => setAuthMode(authMode === 'login' ? 'register' : 'login')}
+                className="text-xs font-semibold text-secondary hover:underline cursor-pointer"
               >
-                <span className="material-symbols-outlined text-[18px]">close</span>
+                {authMode === 'login'
+                  ? "Don't have an account? Register here"
+                  : 'Already registered? Sign in'}
               </button>
             </div>
-
-            <form onSubmit={handleLoginSubmit} className="space-y-3">
-              {authMode === 'register' && (
-                <>
-                  <div className="space-y-1">
-                    <label className="text-xs font-bold text-on-surface">Full Name</label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="e.g. Dr. Abebe Kebede"
-                      value={authForm.name}
-                      onChange={(e) => setAuthForm({ ...authForm, name: e.target.value })}
-                      className="w-full p-2.5 rounded-xl bg-surface-container text-xs text-on-surface border border-outline-variant/30 focus:border-secondary focus:outline-none"
-                    />
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-xs font-bold text-on-surface">University / Organization</label>
-                    <input
-                      type="text"
-                      placeholder="e.g. Haramaya University"
-                      value={authForm.affiliation}
-                      onChange={(e) => setAuthForm({ ...authForm, affiliation: e.target.value })}
-                      className="w-full p-2.5 rounded-xl bg-surface-container text-xs text-on-surface border border-outline-variant/30 focus:border-secondary focus:outline-none"
-                    />
-                  </div>
-                </>
-              )}
-
-              <div className="space-y-1">
-                <label className="text-xs font-bold text-on-surface">Email Address</label>
-                <input
-                  type="email"
-                  required
-                  placeholder="scholar@haramaya.edu.et"
-                  value={authForm.email}
-                  onChange={(e) => setAuthForm({ ...authForm, email: e.target.value })}
-                  className="w-full p-2.5 rounded-xl bg-surface-container text-xs text-on-surface border border-outline-variant/30 focus:border-secondary focus:outline-none"
-                />
-              </div>
-
-              <div className="space-y-1">
-                <label className="text-xs font-bold text-on-surface">Password</label>
-                <input
-                  type="password"
-                  required
-                  placeholder="••••••••"
-                  value={authForm.password}
-                  onChange={(e) => setAuthForm({ ...authForm, password: e.target.value })}
-                  className="w-full p-2.5 rounded-xl bg-surface-container text-xs text-on-surface border border-outline-variant/30 focus:border-secondary focus:outline-none"
-                />
-              </div>
-
-              <button
-                type="submit"
-                className="w-full py-2.5 rounded-xl bg-secondary text-on-secondary font-bold text-xs hover:brightness-105 transition-all cursor-pointer shadow-sm mt-2"
-              >
-                {authMode === 'login' ? 'Sign In to Portal' : 'Register Account'}
-              </button>
-
-              <div className="text-center pt-2">
-                <button
-                  type="button"
-                  onClick={() => setAuthMode(authMode === 'login' ? 'register' : 'login')}
-                  className="text-xs font-semibold text-secondary hover:underline cursor-pointer"
-                >
-                  {authMode === 'login'
-                    ? "Don't have an account? Register here"
-                    : 'Already registered? Sign in'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+          </form>
+        </Modal>
       )}
     </section>
   );

@@ -107,6 +107,94 @@ export const ServicesDetailedShowcase: React.FC<ServicesDetailedShowcaseProps> =
       badge: '4-Way Harmonized',
       accent: 'border-purple-500/30',
     },
+    {
+      id: 'oromoo_book' as ServiceCategory,
+      title: 'Afaan Oromoo Writing & Book Development',
+      tagline: 'Seenaa Dhuunfaa, Aadaa Oromoo, Mammaaksa & Pedagogical Works',
+      image:
+        'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=800&q=80',
+      description:
+        'Dedicated Afaan Oromoo literary authorship and institutional book preparation under the guidance of Oromo cultural and linguistic scholars. From personal biographies to folkloric collections and educational curricula.',
+      bullets: [
+        'Afaan Oromoo text composition & typing',
+        'Seenaa Dhuunfaa (Biographical memoirs)',
+        'Aadaa fi Seenaa Oromoo cultural books',
+        'Mammaaksa (Proverbs) & riddles anthologies',
+        'Children’s & school educational readers',
+        'Traditional wisdom & community histories',
+        'Academic spelling & Qubee standardization',
+        'Peer-reviewed book formatting & publishing',
+      ],
+      btnText: 'Request Afaan Oromoo Service',
+      badge: 'Cultural Authority',
+      accent: 'border-amber-500/30',
+    },
+    {
+      id: 'amharic_book' as ServiceCategory,
+      title: 'Amharic Writing & Literary Composition',
+      tagline: 'Research monographs, analytical essays & Ethiopic typography',
+      image:
+        'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=800&q=80',
+      description:
+        'Specialized Amharic text authoring, book formatting, and Ethiopic manuscript typography. High-speed typing, scholarly essay development, study guides, and thesis translation.',
+      bullets: [
+        'Amharic scholarly book authoring & editing',
+        'High-speed Amharic text typing & transcription',
+        'Educational materials & student workbooks',
+        'Analytical essays & university research articles',
+        'Ethiopic script font harmonization & layout',
+        'Grammar review & syntactic proofreading',
+        'Literary stories & historical monographs',
+        'Print-ready PDF & digital publishing export',
+      ],
+      btnText: 'Request Amharic Book Service',
+      badge: 'Ethiopic Certified',
+      accent: 'border-red-500/30',
+    },
+    {
+      id: 'formatting' as ServiceCategory,
+      title: 'Book Formatting & Pre-Press Production',
+      tagline: 'Print-ready interior layouts, spine math & CIP metadata',
+      image:
+        'https://images.unsplash.com/photo-1507842229451-7f01be8ac70d?auto=format&fit=crop&w=800&q=80',
+      description:
+        'International book layout standards applied to academic textbooks, fiction, poetry, and institutional manuals. Precise margins, running headers, footnotes, table of contents, and barcode/ISBN integration.',
+      bullets: [
+        'Trim size calculation (6x9, A5, B5, Crown Quarto)',
+        'Spine width & page thickness formulas',
+        'Running headers, footers & drop caps',
+        'Table of contents & hierarchical chapter breaks',
+        'Footnotes, endnotes & bibliography styling',
+        'Cataloging-in-Publication (CIP) data blocks',
+        'ISBN, barcode placement & copyright pages',
+        'High-resolution PDF/X-1a print-ready output',
+      ],
+      btnText: 'Request Book Formatting',
+      badge: 'Pre-Press Standard',
+      accent: 'border-cyan-500/30',
+    },
+    {
+      id: 'elearning' as ServiceCategory,
+      title: 'Educational Content & Curricula Development',
+      tagline: 'Modular syllabus design, video lesson packs & assessment kits',
+      image:
+        'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80',
+      description:
+        'Creation of comprehensive higher-education learning modules, lecture companion slides, interactive quizzes, student exercise workbooks, and digital course packages.',
+      bullets: [
+        'Curriculum syllabus structure & learning outcomes',
+        'Interactive quizzes & grading rubrics',
+        'Student study notes & downloadable guides',
+        'Lecture slide kits & multimedia integration',
+        'Basic computer training module development',
+        'Digital certificates & credential design',
+        'Bilingual & multilingual course material packs',
+        'SCORM & LMS-compatible educational content',
+      ],
+      btnText: 'Develop E-Learning Content',
+      badge: 'Pedagogy Ready',
+      accent: 'border-indigo-500/30',
+    },
   ];
 
   return (

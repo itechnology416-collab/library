@@ -81,6 +81,9 @@ export const Header: React.FC<HeaderProps> = ({
     { id: 'peer_review', label: 'Reviewer Portal', icon: 'rate_review' },
     { id: 'faculty', label: 'Faculty & Grants', icon: 'account_balance_wallet' },
     { id: 'admin', label: t.adminNav || 'Admin Desk', icon: 'admin_panel_settings' },
+    { id: 'repository', label: 'E-Repository & ETD', icon: 'auto_stories' },
+    { id: 'irb', label: 'Ethics & IRB Desk', icon: 'verified_user' },
+    { id: 'tech_transfer', label: 'Tech Transfer & Ext', icon: 'hub' },
     { id: 'services', label: t.servicesNav || 'Services', icon: 'design_services' },
     { id: 'books', label: t.booksNav || 'Books', icon: 'menu_book' },
     { id: 'elearning', label: t.elearnNav || 'E-Learning', icon: 'local_library' },
@@ -89,506 +92,621 @@ export const Header: React.FC<HeaderProps> = ({
     { id: 'contact', label: 'Contact', icon: 'call' },
   ];
 
+  // Primary navigation for large viewports
   const primaryDesktopNav = navItems.slice(0, 6);
-  const overflowDesktopNav = navItems.slice(6);
+  const overflowDesktopNav = navItems.slice(3); // Includes items 3+ for xl screens and 6+ for 2xl screens
 
   return (
-    <header className="fixed top-0 w-full z-50 bg-surface/95 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] pt-safe transition-colors border-b border-outline-variant/10">
-      <div className="h-20 px-gutter-mobile flex items-center justify-between gap-space-sm max-w-7xl mx-auto">
-        {/* Brand & Affiliation */}
+    <header className="fixed top-0 left-0 right-0 w-full z-50 transition-colors">
+      {/* Click-outside backdrop for open dropdowns */}
+      {(showLangMenu || showNotifications || showUserMenu) && (
         <div
-          className="flex items-center gap-space-sm min-w-0 cursor-pointer"
+          className="fixed inset-0 z-40 bg-black/10 backdrop-blur-[0.5px]"
           onClick={() => {
-            onTabChange('home');
-            setShowMobileMenu(false);
+            setShowLangMenu(false);
+            setShowNotifications(false);
+            setShowUserMenu(false);
           }}
-        >
-          <img
-            alt="Wirtuu Kompiitaraa Ilillii Logo"
-            className="h-8 w-auto object-contain flex-shrink-0"
-            src={OFFICIAL_BRAND.logoUrl}
-          />
-          <div className="flex flex-col min-w-0">
-            <div className="flex items-center gap-space-xs">
-              <span className="font-title-sm text-title-sm text-on-surface font-bold truncate leading-tight tracking-tight">
-                {OFFICIAL_BRAND.name}
-              </span>
-            </div>
-            <div className="flex items-center gap-space-xs">
-              <span className="font-label-sm text-label-sm text-secondary font-semibold uppercase tracking-wider">
-                Haramaya Univ.
-              </span>
-              <span className="text-outline font-label-sm text-label-sm">•</span>
-              <span className="font-label-sm text-label-sm text-on-surface-variant truncate capitalize">
-                {navItems.find((n) => n.id === activeTab)?.label || activeTab}
-              </span>
-            </div>
+        />
+      )}
+
+      {/* ========================================================================= */}
+      {/* 1. TOPMOST: INSTITUTIONAL CONTACT & UTILITY BAR (h-8 / 32px)               */}
+      {/* ========================================================================= */}
+      <div className="w-full bg-[#0f172a] dark:bg-[#050505] text-slate-200 text-xs border-b border-slate-800 dark:border-[#1a1a1a] transition-colors shadow-xs relative z-50">
+        <div className="w-full h-8 px-3 sm:px-4 md:px-6 flex items-center justify-between gap-2 text-[11px] font-medium overflow-x-hidden">
+          {/* Institutional Affiliation & Tagline */}
+          <div className="flex items-center gap-2 min-w-0 shrink">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-400/20 text-amber-300 font-bold text-[10px] sm:text-[11px] border border-amber-400/30 tracking-wide uppercase shrink-0">
+              <span className="material-symbols-outlined text-[13px] text-amber-400">school</span>
+              <span>Haramaya University</span>
+            </span>
+            <span className="hidden md:inline-flex items-center text-slate-400 text-[10px] lg:text-[11px] truncate">
+              <span className="mx-1.5 opacity-40">•</span>
+              <span className="text-slate-300 truncate">Your Ideas. Our Skills. Professional Results.</span>
+            </span>
+          </div>
+
+          {/* Contact Numbers, Telegram & Hubs Shortcut */}
+          <div className="flex items-center gap-2 sm:gap-3 lg:gap-4 shrink-0 text-[11px]">
+            <a
+              href="tel:+251927650724"
+              className="flex items-center gap-1 text-slate-300 hover:text-amber-300 transition-colors font-mono"
+              title="Direct Telephone"
+            >
+              <span className="material-symbols-outlined text-[13px] text-amber-400 shrink-0">call</span>
+              <span className="hidden xs:inline">+251 927 650 724</span>
+              <span className="xs:hidden">Call</span>
+            </a>
+
+            <a
+              href="tel:+251961189074"
+              className="hidden md:flex items-center gap-1 text-slate-300 hover:text-amber-300 transition-colors font-mono"
+              title="Secondary Telephone"
+            >
+              <span className="material-symbols-outlined text-[13px] text-amber-400 shrink-0">call</span>
+              <span>+251 961 189 074</span>
+            </a>
+
+            <span className="hidden sm:inline text-slate-700">|</span>
+
+            <a
+              href="https://t.me/FEYSAL_8"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1 text-slate-300 hover:text-amber-300 transition-colors"
+              title="Official Telegram Channel / Contact"
+            >
+              <span className="material-symbols-outlined text-[13px] text-amber-400 shrink-0">send</span>
+              <span className="font-semibold hidden sm:inline">Telegram: @FEYSAL_8</span>
+              <span className="font-semibold sm:hidden">@FEYSAL_8</span>
+            </a>
+
+            <button
+              onClick={() => onTabChange('dashboards')}
+              className="hidden lg:flex items-center gap-1 px-2 py-0.5 rounded bg-slate-800 dark:bg-[#151515] hover:bg-slate-700 dark:hover:bg-[#202020] text-slate-200 text-[10px] font-bold transition-all border border-slate-700 dark:border-white/10 cursor-pointer"
+            >
+              <span className="material-symbols-outlined text-[12px] text-amber-400 shrink-0">apps</span>
+              <span>Institutional Hubs</span>
+            </button>
           </div>
         </div>
+      </div>
 
-        {/* Desktop Navigation Links */}
-        <nav className="hidden xl:flex items-center gap-1">
-          {primaryDesktopNav.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => onTabChange(item.id)}
-              className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
-                activeTab === item.id
-                  ? 'bg-secondary text-on-secondary shadow-xs'
-                  : 'text-on-surface hover:bg-surface-container'
-              }`}
-            >
-              {item.label}
-            </button>
-          ))}
-
-          {/* More Dropdown for Desktop */}
-          <div className="relative group">
-            <button className="px-2.5 py-1.5 rounded-lg text-xs font-semibold text-on-surface hover:bg-surface-container flex items-center gap-1 cursor-pointer">
-              <span>More</span>
-              <span className="material-symbols-outlined text-[14px]">expand_more</span>
-            </button>
-
-            <div className="absolute right-0 top-full mt-1 w-44 rounded-xl bg-surface-container-lowest border border-outline-variant/30 shadow-xl p-1.5 hidden group-hover:block z-50">
-              {overflowDesktopNav.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => onTabChange(item.id)}
-                  className={`w-full flex items-center gap-2 px-3 py-2 text-xs font-semibold rounded-lg text-left transition-colors cursor-pointer ${
-                    activeTab === item.id
-                      ? 'bg-secondary text-on-secondary'
-                      : 'text-on-surface hover:bg-surface-container'
-                  }`}
-                >
-                  <span className="material-symbols-outlined text-[16px]">{item.icon}</span>
-                  <span>{item.label}</span>
-                </button>
-              ))}
-              <div className="border-t border-outline-variant/20 pt-1 mt-1 space-y-0.5">
-                {onOpenQuotation && (
-                  <button
-                    onClick={onOpenQuotation}
-                    className="w-full flex items-center gap-2 px-3 py-1.5 text-xs font-bold rounded-lg text-left text-secondary hover:bg-secondary/10 transition-colors cursor-pointer"
-                  >
-                    <span className="material-symbols-outlined text-[16px]">receipt_long</span>
-                    <span>Pro-Forma Quotation</span>
-                  </button>
-                )}
-                {onOpenDiagnostic && (
-                  <button
-                    onClick={onOpenDiagnostic}
-                    className="w-full flex items-center gap-2 px-3 py-1.5 text-xs font-bold rounded-lg text-left text-tertiary hover:bg-tertiary/10 transition-colors cursor-pointer"
-                  >
-                    <span className="material-symbols-outlined text-[16px]">spellcheck</span>
-                    <span>Manuscript Audit</span>
-                  </button>
-                )}
-                {onOpenGlossary && (
-                  <button
-                    onClick={onOpenGlossary}
-                    className="w-full flex items-center gap-2 px-3 py-1.5 text-xs font-bold rounded-lg text-left text-primary hover:bg-primary/10 transition-colors cursor-pointer"
-                  >
-                    <span className="material-symbols-outlined text-[16px]">translate</span>
-                    <span>4-Way Glossary</span>
-                  </button>
-                )}
-                {onOpenCitation && (
-                  <button
-                    onClick={onOpenCitation}
-                    className="w-full flex items-center gap-2 px-3 py-1.5 text-xs font-bold rounded-lg text-left text-secondary hover:bg-secondary/10 transition-colors cursor-pointer"
-                  >
-                    <span className="material-symbols-outlined text-[16px]">format_quote</span>
-                    <span>Citation Studio (BibTeX/APA)</span>
-                  </button>
-                )}
-                {onOpenThesisSlideStudio && (
-                  <button
-                    onClick={onOpenThesisSlideStudio}
-                    className="w-full flex items-center gap-2 px-3 py-1.5 text-xs font-bold rounded-lg text-left text-secondary hover:bg-secondary/10 transition-colors cursor-pointer"
-                  >
-                    <span className="material-symbols-outlined text-[16px]">slideshow</span>
-                    <span>Thesis Slide & LaTeX Studio</span>
-                  </button>
-                )}
-                {onOpenPeerReview && (
-                  <button
-                    onClick={onOpenPeerReview}
-                    className="w-full flex items-center gap-2 px-3 py-1.5 text-xs font-bold rounded-lg text-left text-primary hover:bg-primary/10 transition-colors cursor-pointer"
-                  >
-                    <span className="material-symbols-outlined text-[16px]">rate_review</span>
-                    <span>Peer-Review Matrix</span>
-                  </button>
-                )}
-                {onOpenCoverStudio && (
-                  <button
-                    onClick={onOpenCoverStudio}
-                    className="w-full flex items-center gap-2 px-3 py-1.5 text-xs font-bold rounded-lg text-left text-secondary hover:bg-secondary/10 transition-colors cursor-pointer"
-                  >
-                    <span className="material-symbols-outlined text-[16px]">book_online</span>
-                    <span>Monograph Jacket & Spine Studio</span>
-                  </button>
-                )}
-                {onOpenCIP && (
-                  <button
-                    onClick={onOpenCIP}
-                    className="w-full flex items-center gap-2 px-3 py-1.5 text-xs font-bold rounded-lg text-left text-primary hover:bg-primary/10 transition-colors cursor-pointer"
-                  >
-                    <span className="material-symbols-outlined text-[16px]">qr_code_2</span>
-                    <span>CIP Data & ISBN Barcode</span>
-                  </button>
-                )}
-                {onOpenProofreader && (
-                  <button
-                    onClick={onOpenProofreader}
-                    className="w-full flex items-center gap-2 px-3 py-1.5 text-xs font-bold rounded-lg text-left text-tertiary hover:bg-tertiary/10 transition-colors cursor-pointer"
-                  >
-                    <span className="material-symbols-outlined text-[16px]">spellcheck</span>
-                    <span>Multilingual Proofreader & Linter</span>
-                  </button>
-                )}
-                {onOpenPosterStudio && (
-                  <button
-                    onClick={onOpenPosterStudio}
-                    className="w-full flex items-center gap-2 px-3 py-1.5 text-xs font-bold rounded-lg text-left text-secondary hover:bg-secondary/10 transition-colors cursor-pointer"
-                  >
-                    <span className="material-symbols-outlined text-[16px]">view_quilt</span>
-                    <span>Conference Poster Studio (A0/A1)</span>
-                  </button>
-                )}
-                {onOpenPlagiarism && (
-                  <button
-                    onClick={onOpenPlagiarism}
-                    className="w-full flex items-center gap-2 px-3 py-1.5 text-xs font-bold rounded-lg text-left text-primary hover:bg-primary/10 transition-colors cursor-pointer"
-                  >
-                    <span className="material-symbols-outlined text-[16px]">policy</span>
-                    <span>Plagiarism & Originality Index</span>
-                  </button>
-                )}
-                {onOpenGrantStudio && (
-                  <button
-                    onClick={onOpenGrantStudio}
-                    className="w-full flex items-center gap-2 px-3 py-1.5 text-xs font-bold rounded-lg text-left text-secondary hover:bg-secondary/10 transition-colors cursor-pointer"
-                  >
-                    <span className="material-symbols-outlined text-[16px]">account_balance</span>
-                    <span>Research Grant & Budget Studio</span>
-                  </button>
-                )}
-                {onOpenDOI && (
-                  <button
-                    onClick={onOpenDOI}
-                    className="w-full flex items-center gap-2 px-3 py-1.5 text-xs font-bold rounded-lg text-left text-primary hover:bg-primary/10 transition-colors cursor-pointer"
-                  >
-                    <span className="material-symbols-outlined text-[16px]">tag</span>
-                    <span>DOI & CrossRef Schema Studio</span>
-                  </button>
-                )}
-                {onOpenJournalWorkflow && (
-                  <button
-                    onClick={onOpenJournalWorkflow}
-                    className="w-full flex items-center gap-2 px-3 py-1.5 text-xs font-bold rounded-lg text-left text-tertiary hover:bg-tertiary/10 transition-colors cursor-pointer"
-                  >
-                    <span className="material-symbols-outlined text-[16px]">menu_book</span>
-                    <span>Journal Editorial & Galley Pipeline</span>
-                  </button>
-                )}
-                {onOpenVerify && (
-                  <button
-                    onClick={onOpenVerify}
-                    className="w-full flex items-center gap-2 px-3 py-1.5 text-xs font-bold rounded-lg text-left text-on-surface-variant hover:bg-surface-container transition-colors cursor-pointer"
-                  >
-                    <span className="material-symbols-outlined text-[16px]">verified</span>
-                    <span>Verify Certificate</span>
-                  </button>
-                )}
-              </div>
-            </div>
-          </div>
-        </nav>
-
-        {/* Action Controls */}
-        <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0 relative">
-          {/* Quick Request Button (Desktop) */}
-          <button
-            onClick={onRequestClick}
-            className="hidden md:flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-secondary text-on-secondary font-label-sm text-xs font-bold hover:brightness-105 active:scale-95 transition-all shadow-xs cursor-pointer"
+      {/* ========================================================================= */}
+      {/* 2. MAIN NAVIGATION & ACTION BAR (h-14 / 56px)                              */}
+      {/* ========================================================================= */}
+      <div className="w-full bg-surface/90 dark:bg-[#050505]/90 backdrop-blur-xl border-b border-outline-variant/20 dark:border-white/10 shadow-[0_2px_10px_rgba(0,0,0,0.04)] dark:shadow-[0_4px_25px_rgba(0,0,0,0.5)] relative z-50">
+        <div className="h-14 px-3 sm:px-4 md:px-6 flex items-center justify-between gap-2 sm:gap-3 lg:gap-4 w-full">
+          {/* 1. Left: Single Clean Brand */}
+          <div
+            className="flex items-center gap-2 sm:gap-2.5 min-w-0 cursor-pointer flex-shrink-0 group select-none"
+            onClick={() => {
+              onTabChange('home');
+              setShowMobileMenu(false);
+            }}
           >
-            <span className="material-symbols-outlined text-[16px]">edit_note</span>
-            <span>{t.requestServiceBtn || 'Request Service'}</span>
-          </button>
+            <img
+              alt="Wirtuu Kompiitaraa Ilillii Logo"
+              className="h-8 sm:h-9 w-auto object-contain flex-shrink-0 rounded-md transition-transform group-hover:scale-105"
+              src={OFFICIAL_BRAND.logoUrl}
+              referrerPolicy="no-referrer"
+            />
+            <span className="font-bold text-xs sm:text-[13.5px] lg:text-[14.5px] text-on-surface leading-none tracking-tight whitespace-nowrap truncate max-w-[150px] xs:max-w-[190px] sm:max-w-none">
+              {OFFICIAL_BRAND.name}
+            </span>
+          </div>
 
-          {/* Multilingual Switcher */}
-          <div className="relative">
-            <button
-              aria-label="Multilingual Switcher"
-              onClick={() => setShowLangMenu(!showLangMenu)}
-              className="h-9 px-2.5 rounded-lg flex items-center justify-center gap-1 bg-surface-container text-on-surface hover:bg-surface-container-high transition-colors cursor-pointer"
-            >
-              <span className="material-symbols-outlined text-[16px] text-secondary">
-                translate
-              </span>
-              <span className="text-[11px] font-bold uppercase tracking-wider">
-                {currentLanguage.toUpperCase()}
-              </span>
-            </button>
-
-            {showLangMenu && (
-              <div
-                className="absolute right-0 mt-2 w-48 rounded-xl bg-surface-container-lowest shadow-2xl border border-outline-variant/30 p-1.5 z-50"
-                dir="ltr"
+          {/* 2. Center: Flexible Desktop Navigation (flex-1 min-w-0) */}
+          <nav className="hidden xl:flex flex-1 min-w-0 items-center justify-center gap-0.5 2xl:gap-1 px-2">
+            {primaryDesktopNav.map((item, idx) => (
+              <button
+                key={item.id}
+                onClick={() => onTabChange(item.id)}
+                className={`px-2 2xl:px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+                  idx >= 3 ? 'hidden 2xl:inline-block' : 'inline-block'
+                } ${
+                  activeTab === item.id
+                    ? 'bg-secondary text-on-secondary shadow-xs font-bold'
+                    : 'text-on-surface/90 hover:text-on-surface hover:bg-surface-container'
+                }`}
               >
-                <div className="px-2 py-1 text-[11px] font-bold text-secondary uppercase tracking-wider">
-                  Select Language
-                </div>
-                {languages.map((lang) => (
+                {item.label}
+              </button>
+            ))}
+
+            {/* More Dropdown for Desktop */}
+            <div className="relative group shrink-0">
+              <button className="px-2 2xl:px-2.5 py-1.5 rounded-lg text-xs font-semibold text-on-surface/90 hover:text-on-surface hover:bg-surface-container flex items-center gap-0.5 cursor-pointer whitespace-nowrap">
+                <span>More</span>
+                <span className="material-symbols-outlined text-[14px]">expand_more</span>
+              </button>
+
+              <div className="absolute right-0 top-full mt-1.5 w-56 rounded-xl bg-surface-container-lowest border border-outline-variant/30 shadow-2xl p-1.5 hidden group-hover:block z-50">
+                {overflowDesktopNav.map((item) => (
                   <button
-                    key={lang.code}
-                    onClick={() => {
-                      onLanguageChange(lang.code);
-                      setShowLangMenu(false);
-                    }}
-                    className={`w-full flex items-center justify-between px-3 py-2 text-left rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
-                      currentLanguage === lang.code
-                        ? 'bg-surface-container text-secondary font-bold'
+                    key={item.id}
+                    onClick={() => onTabChange(item.id)}
+                    className={`w-full flex items-center gap-2 px-3 py-2 text-xs font-semibold rounded-lg text-left transition-colors cursor-pointer ${
+                      activeTab === item.id
+                        ? 'bg-secondary text-on-secondary font-bold'
                         : 'text-on-surface hover:bg-surface-container'
                     }`}
                   >
-                    <span>{lang.label}</span>
-                    {currentLanguage === lang.code && (
-                      <span className="material-symbols-outlined text-[14px] text-secondary">
-                        check
-                      </span>
-                    )}
+                    <span className="material-symbols-outlined text-[16px]">{item.icon}</span>
+                    <span>{item.label}</span>
                   </button>
                 ))}
+                <div className="border-t border-outline-variant/20 pt-1 mt-1 space-y-0.5">
+                  {onOpenQuotation && (
+                    <button
+                      onClick={onOpenQuotation}
+                      className="w-full flex items-center gap-2 px-3 py-1.5 text-xs font-bold rounded-lg text-left text-secondary hover:bg-secondary/10 transition-colors cursor-pointer"
+                    >
+                      <span className="material-symbols-outlined text-[16px]">receipt_long</span>
+                      <span>Pro-Forma Quotation</span>
+                    </button>
+                  )}
+                  {onOpenDiagnostic && (
+                    <button
+                      onClick={onOpenDiagnostic}
+                      className="w-full flex items-center gap-2 px-3 py-1.5 text-xs font-bold rounded-lg text-left text-tertiary hover:bg-tertiary/10 transition-colors cursor-pointer"
+                    >
+                      <span className="material-symbols-outlined text-[16px]">spellcheck</span>
+                      <span>Manuscript Audit</span>
+                    </button>
+                  )}
+                  {onOpenGlossary && (
+                    <button
+                      onClick={onOpenGlossary}
+                      className="w-full flex items-center gap-2 px-3 py-1.5 text-xs font-bold rounded-lg text-left text-primary hover:bg-primary/10 transition-colors cursor-pointer"
+                    >
+                      <span className="material-symbols-outlined text-[16px]">translate</span>
+                      <span>4-Way Glossary</span>
+                    </button>
+                  )}
+                  {onOpenCitation && (
+                    <button
+                      onClick={onOpenCitation}
+                      className="w-full flex items-center gap-2 px-3 py-1.5 text-xs font-bold rounded-lg text-left text-secondary hover:bg-secondary/10 transition-colors cursor-pointer"
+                    >
+                      <span className="material-symbols-outlined text-[16px]">format_quote</span>
+                      <span>Citation Studio (BibTeX/APA)</span>
+                    </button>
+                  )}
+                  {onOpenThesisSlideStudio && (
+                    <button
+                      onClick={onOpenThesisSlideStudio}
+                      className="w-full flex items-center gap-2 px-3 py-1.5 text-xs font-bold rounded-lg text-left text-secondary hover:bg-secondary/10 transition-colors cursor-pointer"
+                    >
+                      <span className="material-symbols-outlined text-[16px]">slideshow</span>
+                      <span>Thesis Slide & LaTeX Studio</span>
+                    </button>
+                  )}
+                  {onOpenPeerReview && (
+                    <button
+                      onClick={onOpenPeerReview}
+                      className="w-full flex items-center gap-2 px-3 py-1.5 text-xs font-bold rounded-lg text-left text-primary hover:bg-primary/10 transition-colors cursor-pointer"
+                    >
+                      <span className="material-symbols-outlined text-[16px]">rate_review</span>
+                      <span>Peer-Review Matrix</span>
+                    </button>
+                  )}
+                  {onOpenCoverStudio && (
+                    <button
+                      onClick={onOpenCoverStudio}
+                      className="w-full flex items-center gap-2 px-3 py-1.5 text-xs font-bold rounded-lg text-left text-secondary hover:bg-secondary/10 transition-colors cursor-pointer"
+                    >
+                      <span className="material-symbols-outlined text-[16px]">book_online</span>
+                      <span>Monograph Jacket & Spine Studio</span>
+                    </button>
+                  )}
+                  {onOpenCIP && (
+                    <button
+                      onClick={onOpenCIP}
+                      className="w-full flex items-center gap-2 px-3 py-1.5 text-xs font-bold rounded-lg text-left text-primary hover:bg-primary/10 transition-colors cursor-pointer"
+                    >
+                      <span className="material-symbols-outlined text-[16px]">qr_code_2</span>
+                      <span>CIP Data & ISBN Barcode</span>
+                    </button>
+                  )}
+                  {onOpenProofreader && (
+                    <button
+                      onClick={onOpenProofreader}
+                      className="w-full flex items-center gap-2 px-3 py-1.5 text-xs font-bold rounded-lg text-left text-tertiary hover:bg-tertiary/10 transition-colors cursor-pointer"
+                    >
+                      <span className="material-symbols-outlined text-[16px]">spellcheck</span>
+                      <span>Multilingual Proofreader & Linter</span>
+                    </button>
+                  )}
+                  {onOpenPosterStudio && (
+                    <button
+                      onClick={onOpenPosterStudio}
+                      className="w-full flex items-center gap-2 px-3 py-1.5 text-xs font-bold rounded-lg text-left text-secondary hover:bg-secondary/10 transition-colors cursor-pointer"
+                    >
+                      <span className="material-symbols-outlined text-[16px]">view_quilt</span>
+                      <span>Conference Poster Studio (A0/A1)</span>
+                    </button>
+                  )}
+                  {onOpenPlagiarism && (
+                    <button
+                      onClick={onOpenPlagiarism}
+                      className="w-full flex items-center gap-2 px-3 py-1.5 text-xs font-bold rounded-lg text-left text-primary hover:bg-primary/10 transition-colors cursor-pointer"
+                    >
+                      <span className="material-symbols-outlined text-[16px]">policy</span>
+                      <span>Plagiarism & Originality Index</span>
+                    </button>
+                  )}
+                  {onOpenGrantStudio && (
+                    <button
+                      onClick={onOpenGrantStudio}
+                      className="w-full flex items-center gap-2 px-3 py-1.5 text-xs font-bold rounded-lg text-left text-secondary hover:bg-secondary/10 transition-colors cursor-pointer"
+                    >
+                      <span className="material-symbols-outlined text-[16px]">account_balance</span>
+                      <span>Research Grant & Budget Studio</span>
+                    </button>
+                  )}
+                  {onOpenDOI && (
+                    <button
+                      onClick={onOpenDOI}
+                      className="w-full flex items-center gap-2 px-3 py-1.5 text-xs font-bold rounded-lg text-left text-primary hover:bg-primary/10 transition-colors cursor-pointer"
+                    >
+                      <span className="material-symbols-outlined text-[16px]">tag</span>
+                      <span>DOI & CrossRef Schema Studio</span>
+                    </button>
+                  )}
+                  {onOpenJournalWorkflow && (
+                    <button
+                      onClick={onOpenJournalWorkflow}
+                      className="w-full flex items-center gap-2 px-3 py-1.5 text-xs font-bold rounded-lg text-left text-tertiary hover:bg-tertiary/10 transition-colors cursor-pointer"
+                    >
+                      <span className="material-symbols-outlined text-[16px]">menu_book</span>
+                      <span>Journal Editorial & Galley Pipeline</span>
+                    </button>
+                  )}
+                  {onOpenVerify && (
+                    <button
+                      onClick={onOpenVerify}
+                      className="w-full flex items-center gap-2 px-3 py-1.5 text-xs font-bold rounded-lg text-left text-on-surface-variant hover:bg-surface-container transition-colors cursor-pointer"
+                    >
+                      <span className="material-symbols-outlined text-[16px]">verified</span>
+                      <span>Verify Certificate</span>
+                    </button>
+                  )}
+                </div>
               </div>
-            )}
-          </div>
+            </div>
+          </nav>
 
-          {/* Dark Mode Toggle */}
-          <button
-            aria-label="Toggle Dark Mode"
-            onClick={onToggleDarkMode}
-            className="w-9 h-9 rounded-lg flex items-center justify-center text-on-surface hover:bg-surface-container transition-colors cursor-pointer"
-          >
-            <span className="material-symbols-outlined text-[18px]">
-              {darkMode ? 'light_mode' : 'dark_mode'}
-            </span>
-          </button>
-
-          {/* Global Search Button */}
-          <button
-            aria-label="Search Catalog & Courses"
-            onClick={onOpenSearch}
-            className="w-9 h-9 rounded-lg flex items-center justify-center text-on-surface hover:bg-surface-container transition-colors cursor-pointer"
-          >
-            <span className="material-symbols-outlined text-[18px]">search</span>
-          </button>
-
-          {/* Notification Button */}
-          <div className="relative">
+          {/* 3. Right: Protected Action Controls (flex-shrink-0) */}
+          <div className="flex items-center gap-1 sm:gap-1.5 xl:gap-2 flex-shrink-0 ml-auto lg:ml-0 relative">
+            {/* Quick Request Button (Desktop / Tablet) */}
             <button
-              aria-label="Academic Notifications"
-              onClick={() => setShowNotifications(!showNotifications)}
-              className="w-9 h-9 rounded-lg flex items-center justify-center text-on-surface relative hover:bg-surface-container transition-colors cursor-pointer"
+              onClick={onRequestClick}
+              className="hidden md:flex items-center gap-1.5 px-3 lg:px-3.5 py-1.5 rounded-xl bg-secondary text-on-secondary text-xs font-bold hover:brightness-105 active:scale-95 transition-all shadow-xs cursor-pointer shrink-0 whitespace-nowrap"
             >
-              <span className="material-symbols-outlined text-[18px]">notifications</span>
-              {pendingRequestsCount > 0 && (
-                <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-secondary ring-2 ring-surface animate-ping"></span>
-              )}
-              <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-secondary ring-2 ring-surface"></span>
+              <span className="material-symbols-outlined text-[16px]">edit_note</span>
+              <span>{t.requestServiceBtn || 'Request a Service'}</span>
             </button>
 
-            {showNotifications && (
-              <div className="absolute right-0 mt-2 w-72 rounded-xl bg-surface-container-lowest shadow-2xl border border-outline-variant/30 p-3 z-50">
-                <div className="flex items-center justify-between pb-2 border-b border-outline-variant/15">
-                  <span className="font-title-sm text-xs font-bold text-on-surface">
-                    Press Notifications
-                  </span>
-                  <span className="text-[10px] text-secondary font-bold uppercase">
-                    Live
-                  </span>
-                </div>
-                <div className="mt-2 space-y-2 max-h-64 overflow-y-auto">
-                  <div className="p-2 rounded-lg bg-surface-container text-xs text-on-surface">
-                    <p className="font-semibold text-secondary">Haramaya Academic Desk Active</p>
-                    <p className="text-on-surface-variant mt-0.5 text-[11px]">
-                      Direct submissions for doctoral and thesis presentations are open.
-                    </p>
-                  </div>
-                  <div className="p-2 rounded-lg bg-surface-container text-xs text-on-surface">
-                    <p className="font-semibold text-on-surface">
-                      New Digital Release Available
-                    </p>
-                    <p className="text-on-surface-variant mt-0.5 text-[11px]">
-                      "Mastering English Phrasal Verbs & Idioms" full reader is now live.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* User Authentication Status / Login Button (Desktop) */}
-          {isAuthenticated && user ? (
-            <div className="relative">
+            {/* Multilingual Switcher */}
+            <div className="relative shrink-0">
               <button
-                onClick={() => setShowUserMenu(!showUserMenu)}
-                className="flex items-center gap-2 pl-1.5 pr-2.5 py-1 rounded-xl bg-surface-container hover:bg-surface-container-high border border-outline-variant/30 text-on-surface transition-all cursor-pointer"
+                aria-label="Multilingual Switcher"
+                onClick={() => {
+                  setShowLangMenu(!showLangMenu);
+                  setShowNotifications(false);
+                  setShowUserMenu(false);
+                }}
+                className="h-8 sm:h-8.5 px-2 sm:px-2.5 rounded-lg flex items-center justify-center gap-1 bg-surface-container text-on-surface hover:bg-surface-container-high transition-colors cursor-pointer border border-outline-variant/20 shrink-0"
               >
-                <div className="w-7 h-7 rounded-lg bg-secondary text-on-secondary font-bold text-[11px] flex items-center justify-center uppercase">
-                  {user.name.charAt(0)}
-                </div>
-                <div className="hidden lg:flex flex-col text-left min-w-0 max-w-[120px]">
-                  <span className="text-xs font-bold text-on-surface truncate leading-tight">
-                    {user.name}
-                  </span>
-                  <span className="text-[9px] font-mono text-secondary uppercase font-semibold truncate leading-none">
-                    {user.role}
-                  </span>
-                </div>
-                <span className="material-symbols-outlined text-[16px] text-on-surface-variant">
-                  expand_more
+                <span className="material-symbols-outlined text-[14px] sm:text-[15px] text-secondary">
+                  translate
+                </span>
+                <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider">
+                  {currentLanguage.toUpperCase()}
                 </span>
               </button>
 
-              {showUserMenu && (
-                <div className="absolute right-0 mt-2 w-72 rounded-2xl bg-surface-container-lowest shadow-2xl border border-outline-variant/30 p-3 z-50 animate-in fade-in duration-150">
-                  <div className="p-3 rounded-xl bg-surface-container border border-outline-variant/20 space-y-1 mb-2">
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-lg bg-secondary text-on-secondary font-bold text-xs flex items-center justify-center uppercase">
-                        {user.name.charAt(0)}
-                      </div>
-                      <div className="min-w-0">
-                        <div className="text-xs font-bold text-on-surface truncate">{user.name}</div>
-                        <div className="text-[10px] text-on-surface-variant truncate font-mono">{user.email}</div>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-1.5 pt-1">
-                      <span className="px-2 py-0.5 rounded-md bg-secondary/15 text-secondary text-[10px] font-bold uppercase">
-                        Role: {user.role}
-                      </span>
-                      {user.staffOrStudentId && (
-                        <span className="px-2 py-0.5 rounded-md bg-surface-container-highest text-on-surface-variant text-[10px] font-mono">
-                          {user.staffOrStudentId}
+              {showLangMenu && (
+                <div
+                  className="absolute right-0 mt-2 w-48 max-w-[calc(100vw-24px)] rounded-xl bg-surface-container-lowest shadow-2xl border border-outline-variant/30 p-1.5 z-50 animate-in fade-in duration-100"
+                  dir="ltr"
+                >
+                  <div className="px-2 py-1 text-[11px] font-bold text-secondary uppercase tracking-wider">
+                    Select Language
+                  </div>
+                  {languages.map((lang) => (
+                    <button
+                      key={lang.code}
+                      onClick={() => {
+                        onLanguageChange(lang.code);
+                        setShowLangMenu(false);
+                      }}
+                      className={`w-full flex items-center justify-between px-3 py-2 text-left rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
+                        currentLanguage === lang.code
+                          ? 'bg-surface-container text-secondary font-bold'
+                          : 'text-on-surface hover:bg-surface-container'
+                      }`}
+                    >
+                      <span>{lang.label}</span>
+                      {currentLanguage === lang.code && (
+                        <span className="material-symbols-outlined text-[14px] text-secondary">
+                          check
                         </span>
                       )}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Dark Mode Toggle */}
+            <button
+              aria-label="Toggle Dark Mode"
+              onClick={onToggleDarkMode}
+              className="w-8 h-8 sm:w-8.5 sm:h-8.5 rounded-lg flex items-center justify-center text-on-surface hover:bg-surface-container transition-colors cursor-pointer shrink-0"
+              title={darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            >
+              <span className="material-symbols-outlined text-[16px] sm:text-[18px]">
+                {darkMode ? 'light_mode' : 'dark_mode'}
+              </span>
+            </button>
+
+            {/* Global Search Button */}
+            <button
+              aria-label="Search Catalog & Courses"
+              onClick={onOpenSearch}
+              className="w-8 h-8 sm:w-8.5 sm:h-8.5 rounded-lg flex items-center justify-center text-on-surface hover:bg-surface-container transition-colors cursor-pointer shrink-0"
+              title="Search"
+            >
+              <span className="material-symbols-outlined text-[16px] sm:text-[18px]">search</span>
+            </button>
+
+            {/* Notification Button & Anchored Responsive Dropdown */}
+            <div className="relative shrink-0">
+              <button
+                aria-label="Academic Notifications"
+                onClick={() => {
+                  setShowNotifications(!showNotifications);
+                  setShowLangMenu(false);
+                  setShowUserMenu(false);
+                }}
+                className="w-8 h-8 sm:w-8.5 sm:h-8.5 rounded-lg flex items-center justify-center text-on-surface relative hover:bg-surface-container transition-colors cursor-pointer shrink-0"
+                title="Notifications"
+              >
+                <span className="material-symbols-outlined text-[16px] sm:text-[18px]">notifications</span>
+                {pendingRequestsCount > 0 && (
+                  <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-secondary ring-2 ring-surface animate-ping"></span>
+                )}
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-secondary ring-2 ring-surface"></span>
+              </button>
+
+              {showNotifications && (
+                <div className="absolute right-0 mt-2 w-[calc(100vw-24px)] xs:w-80 max-w-[360px] rounded-2xl bg-surface-container-lowest shadow-2xl border border-outline-variant/30 p-3.5 z-50 animate-in fade-in duration-150">
+                  <div className="flex items-center justify-between pb-2.5 border-b border-outline-variant/15">
+                    <div className="flex items-center gap-1.5">
+                      <span className="material-symbols-outlined text-[16px] text-secondary">campaign</span>
+                      <span className="font-bold text-xs text-on-surface">
+                        Press Notifications
+                      </span>
                     </div>
-                    {user.affiliation && (
-                      <p className="text-[10px] text-on-surface-variant/80 pt-1 line-clamp-1">
-                        {user.affiliation}
-                      </p>
-                    )}
+                    <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                      Live
+                    </span>
                   </div>
 
-                  {/* Dashboard Shortcuts */}
-                  <div className="space-y-1 py-1 border-y border-outline-variant/15">
+                  <div className="mt-2.5 space-y-2 max-h-72 overflow-y-auto">
+                    <div className="p-2.5 rounded-xl bg-surface-container border border-outline-variant/15 text-xs text-on-surface transition-colors hover:border-secondary/30">
+                      <div className="flex items-center justify-between gap-1">
+                        <p className="font-bold text-secondary text-xs">Haramaya Academic Desk Active</p>
+                        <span className="text-[10px] text-on-surface-variant/70 font-mono">Now</span>
+                      </div>
+                      <p className="text-on-surface-variant mt-1 text-[11px] leading-relaxed">
+                        Direct submissions for doctoral and thesis presentations are open.
+                      </p>
+                    </div>
+
+                    <div className="p-2.5 rounded-xl bg-surface-container border border-outline-variant/15 text-xs text-on-surface transition-colors hover:border-secondary/30">
+                      <div className="flex items-center justify-between gap-1">
+                        <p className="font-bold text-on-surface text-xs">New Digital Release Available</p>
+                        <span className="text-[10px] text-on-surface-variant/70 font-mono">New</span>
+                      </div>
+                      <p className="text-on-surface-variant mt-1 text-[11px] leading-relaxed">
+                        "Mastering English Phrasal Verbs & Idioms" full reader is now live.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="pt-2.5 mt-2.5 border-t border-outline-variant/15 flex items-center justify-between">
                     <button
                       onClick={() => {
+                        setShowNotifications(false);
                         onTabChange('dashboards');
-                        setShowUserMenu(false);
                       }}
-                      className="w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold text-on-surface hover:bg-surface-container transition-colors cursor-pointer text-left"
+                      className="text-[11px] font-bold text-secondary hover:underline cursor-pointer flex items-center gap-1"
                     >
-                      <span className="material-symbols-outlined text-[16px] text-secondary">dashboard</span>
-                      <span>Dashboards Hub</span>
+                      <span>Institutional Hubs</span>
+                      <span className="material-symbols-outlined text-[13px]">arrow_forward</span>
                     </button>
                     <button
-                      onClick={() => {
-                        onTabChange('portal');
-                        setShowUserMenu(false);
-                      }}
-                      className="w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold text-on-surface hover:bg-surface-container transition-colors cursor-pointer text-left"
+                      onClick={() => setShowNotifications(false)}
+                      className="text-[11px] font-semibold text-on-surface-variant hover:text-on-surface cursor-pointer"
                     >
-                      <span className="material-symbols-outlined text-[16px] text-secondary">assignment</span>
-                      <span>Author Submission Portal</span>
+                      Dismiss
                     </button>
-                    <button
-                      onClick={() => {
-                        onTabChange('student');
-                        setShowUserMenu(false);
-                      }}
-                      className="w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold text-on-surface hover:bg-surface-container transition-colors cursor-pointer text-left"
-                    >
-                      <span className="material-symbols-outlined text-[16px] text-primary">school</span>
-                      <span>Scholar Workspace</span>
-                    </button>
-                    <button
-                      onClick={() => {
-                        onTabChange('peer_review');
-                        setShowUserMenu(false);
-                      }}
-                      className="w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold text-on-surface hover:bg-surface-container transition-colors cursor-pointer text-left"
-                    >
-                      <span className="material-symbols-outlined text-[16px] text-secondary">rate_review</span>
-                      <span>Peer Reviewer Workspace</span>
-                    </button>
-                    <button
-                      onClick={() => {
-                        onTabChange('faculty');
-                        setShowUserMenu(false);
-                      }}
-                      className="w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold text-on-surface hover:bg-surface-container transition-colors cursor-pointer text-left"
-                    >
-                      <span className="material-symbols-outlined text-[16px] text-amber-600">account_balance_wallet</span>
-                      <span>Faculty & Research Grants</span>
-                    </button>
-                    {user.role === 'admin' && (
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* User Authentication Status / Login Button (Protected & Always Visible) */}
+            {isAuthenticated && user ? (
+              <div className="relative shrink-0">
+                <button
+                  onClick={() => {
+                    setShowUserMenu(!showUserMenu);
+                    setShowLangMenu(false);
+                    setShowNotifications(false);
+                  }}
+                  className="flex items-center gap-1.5 pl-1.5 pr-2 py-1 rounded-xl bg-surface-container hover:bg-surface-container-high border border-outline-variant/30 text-on-surface transition-all cursor-pointer shrink-0"
+                >
+                  <div className="w-6.5 h-6.5 rounded-lg bg-secondary text-on-secondary font-bold text-[11px] flex items-center justify-center uppercase shrink-0">
+                    {user.name.charAt(0)}
+                  </div>
+                  <div className="hidden lg:flex flex-col text-left min-w-0 max-w-[100px]">
+                    <span className="text-xs font-bold text-on-surface truncate leading-tight">
+                      {user.name}
+                    </span>
+                    <span className="text-[9px] font-mono text-secondary uppercase font-semibold truncate leading-none">
+                      {user.role}
+                    </span>
+                  </div>
+                  <span className="material-symbols-outlined text-[15px] text-on-surface-variant shrink-0">
+                    expand_more
+                  </span>
+                </button>
+
+                {showUserMenu && (
+                  <div className="absolute right-0 mt-2 w-72 max-w-[calc(100vw-24px)] rounded-2xl bg-surface-container-lowest shadow-2xl border border-outline-variant/30 p-3 z-50 animate-in fade-in duration-150">
+                    <div className="p-3 rounded-xl bg-surface-container border border-outline-variant/20 space-y-1 mb-2">
+                      <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 rounded-lg bg-secondary text-on-secondary font-bold text-xs flex items-center justify-center uppercase">
+                          {user.name.charAt(0)}
+                        </div>
+                        <div className="min-w-0">
+                          <div className="text-xs font-bold text-on-surface truncate">{user.name}</div>
+                          <div className="text-[10px] text-on-surface-variant truncate font-mono">{user.email}</div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1.5 pt-1">
+                        <span className="px-2 py-0.5 rounded-md bg-secondary/15 text-secondary text-[10px] font-bold uppercase">
+                          Role: {user.role}
+                        </span>
+                        {user.staffOrStudentId && (
+                          <span className="px-2 py-0.5 rounded-md bg-surface-container-highest text-on-surface-variant text-[10px] font-mono">
+                            {user.staffOrStudentId}
+                          </span>
+                        )}
+                      </div>
+                      {user.affiliation && (
+                        <p className="text-[10px] text-on-surface-variant/80 pt-1 line-clamp-1">
+                          {user.affiliation}
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Dashboard Shortcuts */}
+                    <div className="space-y-1 py-1 border-y border-outline-variant/15">
                       <button
                         onClick={() => {
-                          onTabChange('admin');
+                          onTabChange('dashboards');
                           setShowUserMenu(false);
                         }}
                         className="w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold text-on-surface hover:bg-surface-container transition-colors cursor-pointer text-left"
                       >
-                        <span className="material-symbols-outlined text-[16px] text-rose-600">admin_panel_settings</span>
-                        <span>Registrar & Admin Desk</span>
+                        <span className="material-symbols-outlined text-[16px] text-secondary">dashboard</span>
+                        <span>Dashboards Hub</span>
                       </button>
-                    )}
-                  </div>
+                      <button
+                        onClick={() => {
+                          onTabChange('portal');
+                          setShowUserMenu(false);
+                        }}
+                        className="w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold text-on-surface hover:bg-surface-container transition-colors cursor-pointer text-left"
+                      >
+                        <span className="material-symbols-outlined text-[16px] text-secondary">assignment</span>
+                        <span>Author Submission Portal</span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          onTabChange('student');
+                          setShowUserMenu(false);
+                        }}
+                        className="w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold text-on-surface hover:bg-surface-container transition-colors cursor-pointer text-left"
+                      >
+                        <span className="material-symbols-outlined text-[16px] text-primary">school</span>
+                        <span>Scholar Workspace</span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          onTabChange('peer_review');
+                          setShowUserMenu(false);
+                        }}
+                        className="w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold text-on-surface hover:bg-surface-container transition-colors cursor-pointer text-left"
+                      >
+                        <span className="material-symbols-outlined text-[16px] text-secondary">rate_review</span>
+                        <span>Peer Reviewer Workspace</span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          onTabChange('faculty');
+                          setShowUserMenu(false);
+                        }}
+                        className="w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold text-on-surface hover:bg-surface-container transition-colors cursor-pointer text-left"
+                      >
+                        <span className="material-symbols-outlined text-[16px] text-amber-600">account_balance_wallet</span>
+                        <span>Faculty & Research Grants</span>
+                      </button>
+                      {user.role === 'admin' && (
+                        <button
+                          onClick={() => {
+                            onTabChange('admin');
+                            setShowUserMenu(false);
+                          }}
+                          className="w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold text-on-surface hover:bg-surface-container transition-colors cursor-pointer text-left"
+                        >
+                          <span className="material-symbols-outlined text-[16px] text-rose-600">admin_panel_settings</span>
+                          <span>Registrar & Admin Desk</span>
+                        </button>
+                      )}
+                    </div>
 
-                  {/* Sign Out Button */}
-                  <div className="pt-2">
-                    <button
-                      onClick={async () => {
-                        setShowUserMenu(false);
-                        await logout();
-                        onTabChange('home');
-                      }}
-                      className="w-full flex items-center justify-center gap-1.5 py-2 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-700 dark:text-rose-300 text-xs font-bold transition-colors cursor-pointer"
-                    >
-                      <span className="material-symbols-outlined text-[16px]">logout</span>
-                      <span>Sign Out</span>
-                    </button>
+                    {/* Sign Out Button */}
+                    <div className="pt-2">
+                      <button
+                        onClick={async () => {
+                          setShowUserMenu(false);
+                          await logout();
+                          onTabChange('home');
+                        }}
+                        className="w-full flex items-center justify-center gap-1.5 py-2 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-700 dark:text-rose-300 text-xs font-bold transition-colors cursor-pointer"
+                      >
+                        <span className="material-symbols-outlined text-[16px]">logout</span>
+                        <span>Sign Out</span>
+                      </button>
+                    </div>
                   </div>
-                </div>
-              )}
-            </div>
-          ) : (
+                )}
+              </div>
+            ) : (
+              <button
+                onClick={() => onTabChange('login')}
+                className="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-surface-container hover:bg-surface-container-high border border-outline-variant/30 text-on-surface text-xs font-bold transition-all cursor-pointer shrink-0 whitespace-nowrap"
+              >
+                <span className="material-symbols-outlined text-[15px] sm:text-[16px] text-secondary">login</span>
+                <span>Sign In</span>
+              </button>
+            )}
+
+            {/* Mobile Menu Hamburger Button (Hidden on Desktop) */}
             <button
-              onClick={() => onTabChange('login')}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-surface-container hover:bg-surface-container-high border border-outline-variant/30 text-on-surface text-xs font-bold transition-all cursor-pointer"
+              onClick={() => setShowMobileMenu(!showMobileMenu)}
+              aria-label="Toggle Navigation Menu"
+              className="xl:hidden w-8 h-8 sm:w-8.5 sm:h-8.5 rounded-lg flex items-center justify-center text-on-surface hover:bg-surface-container transition-colors cursor-pointer shrink-0"
             >
-              <span className="material-symbols-outlined text-[16px] text-secondary">login</span>
-              <span>Sign In</span>
+              <span className="material-symbols-outlined text-[18px] sm:text-[20px]">
+                {showMobileMenu ? 'close' : 'menu'}
+              </span>
             </button>
-          )}
-
-          {/* Mobile Menu Hamburger Button */}
-          <button
-            onClick={() => setShowMobileMenu(!showMobileMenu)}
-            aria-label="Toggle Navigation Menu"
-            className="xl:hidden w-9 h-9 rounded-lg flex items-center justify-center text-on-surface hover:bg-surface-container transition-colors cursor-pointer"
-          >
-            <span className="material-symbols-outlined text-[20px]">
-              {showMobileMenu ? 'close' : 'menu'}
-            </span>
-          </button>
+          </div>
         </div>
       </div>
 
       {/* Mobile Navigation Drawer */}
       {showMobileMenu && (
-        <div className="xl:hidden bg-surface-container-lowest border-b border-outline-variant/20 px-4 py-3 shadow-xl max-h-[75vh] overflow-y-auto">
+        <div className="xl:hidden bg-surface-container-lowest border-b border-outline-variant/20 px-4 py-3 shadow-2xl max-h-[75vh] overflow-y-auto relative z-50 animate-in slide-in-from-top-2 duration-150">
           {/* Mobile User Profile or Sign In Banner */}
           <div className="mb-3 p-3 rounded-2xl bg-surface-container border border-outline-variant/30 flex items-center justify-between gap-3">
             {isAuthenticated && user ? (

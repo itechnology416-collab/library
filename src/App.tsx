@@ -17,6 +17,7 @@ import {
 } from './data/initialData';
 
 import { ModernLandingPage } from './components/ModernLandingPage';
+import { UploadedLandingPage } from './components/UploadedLandingPage';
 import { Header } from './components/Header';
 import { BottomNav } from './components/BottomNav';
 import { TrustBar } from './components/TrustBar';
@@ -68,6 +69,9 @@ import { PWAInstallBanner } from './components/PWAInstallBanner';
 import { LoginPage } from './components/LoginPage';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { ComputerTrainingPage } from './components/ComputerTrainingPage';
+import { InstitutionalRepositoryPortal } from './components/InstitutionalRepositoryPortal';
+import { ResearchEthicsIntelligencePortal } from './components/ResearchEthicsIntelligencePortal';
+import { TechTransferExtensionHub } from './components/TechTransferExtensionHub';
 import { useAuth } from './context/AuthContext';
 
 export default function App() {
@@ -77,7 +81,11 @@ export default function App() {
     const hash = window.location.hash.replace('#', '');
     return hash || 'home';
   });
-  const [darkMode, setDarkMode] = useState<boolean>(false);
+  const [darkMode, setDarkMode] = useState<boolean>(() => {
+    const saved = localStorage.getItem('wirtuu_theme');
+    if (saved) return saved === 'dark';
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  });
 
   // Sync activeTab with URL hash for persistent navigation and direct URL access
   useEffect(() => {
@@ -150,12 +158,14 @@ export default function App() {
     }, 3500);
   };
 
-  // Sync dark mode class with root html
+  // Sync dark mode class with root html and localStorage
   useEffect(() => {
     if (darkMode) {
       document.documentElement.classList.add('dark');
+      localStorage.setItem('wirtuu_theme', 'dark');
     } else {
       document.documentElement.classList.remove('dark');
+      localStorage.setItem('wirtuu_theme', 'light');
     }
   }, [darkMode]);
 
@@ -189,6 +199,22 @@ export default function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
+  // Load and synchronize requests from server persistence
+  useEffect(() => {
+    fetch('/api/requests')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && Array.isArray(data.requests) && data.requests.length > 0) {
+          setRequests((prev) => {
+            const serverIds = new Set(data.requests.map((r: ServiceRequest) => r.id));
+            const uniqueInitial = prev.filter((r) => !serverIds.has(r.id));
+            return [...data.requests, ...uniqueInitial];
+          });
+        }
+      })
+      .catch((err) => console.warn('Could not load server requests:', err));
+  }, []);
+
   // Service request handlers
   const handleOpenRequestModal = (category: ServiceCategory = 'ppt', pages: number = 25) => {
     setModalInitialCategory(category);
@@ -202,12 +228,21 @@ export default function App() {
     setShowQuotationModal(true);
   };
 
-  const handleRequestCreated = (newReq: ServiceRequest) => {
+  const handleRequestCreated = async (newReq: ServiceRequest) => {
     setRequests((prev) => [newReq, ...prev]);
     showToast(`Request ${newReq.id} recorded! You can track it in My Projects.`);
+    try {
+      await fetch('/api/requests', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newReq),
+      });
+    } catch (err) {
+      console.warn('Could not sync request creation to server:', err);
+    }
   };
 
-  const handleUpdateRequestStatus = (
+  const handleUpdateRequestStatus = async (
     requestId: string,
     newStatus: RequestStatus,
     note?: string
@@ -218,11 +253,27 @@ export default function App() {
       )
     );
     showToast(`Request ${requestId} status changed to ${newStatus}.`);
+    try {
+      await fetch(`/api/requests/${requestId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus, adminNotes: note }),
+      });
+    } catch (err) {
+      console.warn('Could not sync status update to server:', err);
+    }
   };
 
-  const handleDeleteRequest = (requestId: string) => {
+  const handleDeleteRequest = async (requestId: string) => {
     setRequests((prev) => prev.filter((r) => r.id !== requestId));
     showToast(`Request archived.`);
+    try {
+      await fetch(`/api/requests/${requestId}`, {
+        method: 'DELETE',
+      });
+    } catch (err) {
+      console.warn('Could not sync deletion to server:', err);
+    }
   };
 
   // Book catalog handlers
@@ -329,43 +380,35 @@ export default function App() {
       />
 
       {/* Main Content Body */}
-      <main className="flex-1 flex flex-col relative w-full pt-20 pb-20 bg-surface">
-        {/* TAB: HOME / MODERN LANDING PAGE */}
+      <main className="flex-1 flex flex-col relative w-full pt-[88px] pb-20 bg-surface">
+        {/* TAB: HOME / UPLOADED LANDING PAGE */}
         {activeTab === 'home' && (
-          <>
-            <TrustBar currentLanguage={currentLanguage} />
-            <ModernLandingPage
-              currentLanguage={currentLanguage}
-              onLanguageChange={setCurrentLanguage}
-              onRequestClick={(cat, pgs) => handleOpenRequestModal(cat || 'ppt', pgs || 25)}
-              onExploreCourses={() => setActiveTab('elearning')}
-              onExploreBooks={() => setActiveTab('books')}
-              onOpenSearch={() => setShowGlobalSearch(true)}
-              onOpenQuotation={(pgs, cat) => handleOpenQuotation(pgs || 25, cat || 'ppt')}
-              onOpenDiagnostic={() => setShowDiagnosticModal(true)}
-              onOpenThesisSlideStudio={() => setShowThesisSlideModal(true)}
-              onOpenDOI={() => setShowDOIModal(true)}
-              onOpenPeerReview={() => setShowPeerReviewModal(true)}
-              onOpenPlagiarism={() => setShowPlagiarismModal(true)}
-              onOpenCoverStudio={() => setShowCoverStudioModal(true)}
-              onOpenCIP={() => setShowCIPModal(true)}
-              onOpenProofreader={() => setShowProofreaderModal(true)}
-              onOpenPosterStudio={() => setShowPosterStudioModal(true)}
-              onOpenGrantStudio={() => setShowGrantStudioModal(true)}
-              onOpenGlossary={() => setShowGlossaryModal(true)}
-              onOpenVerify={() => setShowVerifyModal(true)}
-              onOpenReader={(b) => setActiveReaderBook(b)}
-              books={books}
-              courses={courses}
-              onNavigateTab={(tab) => setActiveTab(tab)}
-              onOpenLogin={() => setActiveTab('login')}
-            />
-
-            {/* Comprehensive Academic FAQ Section */}
-            <FAQSection onRequestService={() => handleOpenRequestModal('ppt', 25)} />
-
-            <HaramayaCredentials />
-          </>
+          <UploadedLandingPage
+            currentLanguage={currentLanguage}
+            onLanguageChange={setCurrentLanguage}
+            onRequestClick={(cat, pgs) => handleOpenRequestModal(cat || 'ppt', pgs || 25)}
+            onExploreCourses={() => setActiveTab('elearning')}
+            onExploreBooks={() => setActiveTab('books')}
+            onOpenSearch={() => setShowGlobalSearch(true)}
+            onOpenQuotation={(pgs, cat) => handleOpenQuotation(pgs || 25, cat || 'ppt')}
+            onOpenDiagnostic={() => setShowDiagnosticModal(true)}
+            onOpenThesisSlideStudio={() => setShowThesisSlideModal(true)}
+            onOpenDOI={() => setShowDOIModal(true)}
+            onOpenPeerReview={() => setShowPeerReviewModal(true)}
+            onOpenPlagiarism={() => setShowPlagiarismModal(true)}
+            onOpenCoverStudio={() => setShowCoverStudioModal(true)}
+            onOpenCIP={() => setShowCIPModal(true)}
+            onOpenProofreader={() => setShowProofreaderModal(true)}
+            onOpenPosterStudio={() => setShowPosterStudioModal(true)}
+            onOpenGrantStudio={() => setShowGrantStudioModal(true)}
+            onOpenGlossary={() => setShowGlossaryModal(true)}
+            onOpenVerify={() => setShowVerifyModal(true)}
+            onOpenReader={(b) => setActiveReaderBook(b)}
+            books={books}
+            courses={courses}
+            onNavigateTab={(tab) => setActiveTab(tab)}
+            onOpenLogin={() => setActiveTab('login')}
+          />
         )}
 
         {/* TAB: ABOUT US */}
@@ -673,9 +716,43 @@ export default function App() {
                   showToast(`Course archived.`);
                 }}
                 onOpenBookPreview={(book) => setActivePreviewBook(book)}
+                onShowToast={showToast}
               />
             </div>
           </ProtectedRoute>
+        )}
+
+        {/* TAB: INSTITUTIONAL OPEN ACCESS REPOSITORY & ETD ARCHIVE (PHASE 7) */}
+        {activeTab === 'repository' && (
+          <div className="pt-2">
+            <InstitutionalRepositoryPortal
+              onBackToHub={() => setActiveTab('dashboards')}
+              onOpenClearanceDesk={() => setActiveTab('admin')}
+            />
+          </div>
+        )}
+
+        {/* TAB: INSTITUTIONAL REVIEW BOARD (IRB) & RESEARCH INTELLIGENCE (PHASE 8) */}
+        {(activeTab === 'irb' || activeTab === 'ethics_irb') && (
+          <div className="pt-2">
+            <ResearchEthicsIntelligencePortal
+              onBackToHub={() => setActiveTab('dashboards')}
+              onOpenFacultyGrants={() => setActiveTab('faculty')}
+              onOpenRepository={() => setActiveTab('repository')}
+            />
+          </div>
+        )}
+
+        {/* TAB: TECHNOLOGY TRANSFER, HU-BIIC INCUBATION & COMMUNITY EXTENSION (PHASE 9) */}
+        {(activeTab === 'tech_transfer' || activeTab === 'extension_hub' || activeTab === 'incubation') && (
+          <div className="pt-2">
+            <TechTransferExtensionHub
+              currentLanguage={currentLanguage}
+              onBackToHub={() => setActiveTab('dashboards')}
+              onOpenFacultyGrants={() => setActiveTab('faculty')}
+              onOpenRepository={() => setActiveTab('repository')}
+            />
+          </div>
         )}
       </main>
 

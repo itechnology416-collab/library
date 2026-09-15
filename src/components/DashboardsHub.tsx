@@ -3,7 +3,7 @@ import { Language } from '../types';
 
 interface DashboardsHubProps {
   currentLanguage: Language;
-  onSelectDashboard: (tab: 'portal' | 'student' | 'admin' | 'peer_review' | 'faculty') => void;
+  onSelectDashboard: (tab: 'portal' | 'student' | 'admin' | 'peer_review' | 'faculty' | 'repository' | 'irb' | 'tech_transfer') => void;
   pendingRequestsCount: number;
   totalBooksCount: number;
   totalCoursesCount: number;
@@ -42,9 +42,9 @@ export const DashboardsHub: React.FC<DashboardsHubProps> = ({
     {
       id: 'peer_review' as const,
       title: 'Peer Reviewer & Journal Editorial Portal',
-      subtitle: 'Double-blind manuscript evaluation queue for EAJS, HJAS, and HLR, scoring rubrics, and Crossref DOI assignments.',
+      subtitle: 'Double-blind manuscript evaluation queue for EAJS, HJAS, and HLR, scoring rubrics, referee recognition, and Crossref DOI assignments.',
       icon: 'rate_review',
-      badge: 'OJS Editorial Matrix',
+      badge: 'Phase 4 • Double-Blind Editorial Desk',
       badgeColor: 'bg-indigo-500/15 text-indigo-700 dark:text-indigo-300 border-indigo-500/30',
       theme: 'from-indigo-950/20 via-purple-950/10 to-transparent hover:border-indigo-500/50',
       actionText: 'Open Reviewer Portal',
@@ -55,7 +55,7 @@ export const DashboardsHub: React.FC<DashboardsHubProps> = ({
       title: 'Faculty Researcher & Grants Dashboard',
       subtitle: 'Manage research grant proposals, multi-currency budget burn rates, postgraduate thesis supervisees, and citation metrics.',
       icon: 'account_balance_wallet',
-      badge: 'PI Research Hub',
+      badge: 'Phase 5 • PI Grants & Supervision Portal',
       badgeColor: 'bg-teal-500/15 text-teal-700 dark:text-teal-300 border-teal-500/30',
       theme: 'from-teal-950/20 via-cyan-950/10 to-transparent hover:border-teal-500/50',
       actionText: 'Open Faculty Portal',
@@ -63,14 +63,47 @@ export const DashboardsHub: React.FC<DashboardsHubProps> = ({
     },
     {
       id: 'admin' as const,
-      title: 'University Press & Registrar Admin Desk',
-      subtitle: 'Institutional control console for monograph catalog CMS, workload queue management, price settings, and financial audits.',
+      title: 'University Press & Central Registrar Operations',
+      subtitle: 'Official ETD thesis clearance verification & QR certificates, industrial print-on-demand & bindery floor, national ISBN/DOI registry, and financial audit ledger.',
       icon: 'admin_panel_settings',
-      badge: `${totalBooksCount} Publications in Catalog`,
+      badge: 'Phase 6 • Press & Registrar Operations Desk',
       badgeColor: 'bg-purple-500/15 text-purple-700 dark:text-purple-300 border-purple-500/30',
       theme: 'from-purple-950/20 via-slate-950/10 to-transparent hover:border-purple-500/50',
-      actionText: 'Open Registrar Desk',
+      actionText: 'Open Press & Registrar Desk',
       buttonColor: 'bg-purple-700 hover:bg-purple-600 text-white',
+    },
+    {
+      id: 'repository' as const,
+      title: 'Institutional E-Repository & ETD Research Commons',
+      subtitle: 'Open access digital archive, persistent DSpace handles (123456789), Dublin Core metadata, live OAI-PMH 2.0 national harvest feeds, ARR conference proceedings, and global altmetrics.',
+      icon: 'auto_stories',
+      badge: 'Phase 7 • Institutional Repository & ETD Archive',
+      badgeColor: 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/30',
+      theme: 'from-emerald-950/20 via-teal-950/10 to-transparent hover:border-emerald-500/50',
+      actionText: 'Open E-Repository Commons',
+      buttonColor: 'bg-emerald-700 hover:bg-emerald-600 text-white',
+    },
+    {
+      id: 'irb' as const,
+      title: 'Institutional Review Board (IRB) & Research Intelligence',
+      subtitle: 'Ethical protocol review desk (CHMS, Agriculture, Animal, IBC), official clearance certificates with QR/SHA-256 verification, UN SDG research impact intelligence matrix, and annual symposia CFP submissions.',
+      icon: 'verified_user',
+      badge: 'Phase 8 • Research Ethics & Institutional Intelligence',
+      badgeColor: 'bg-blue-500/15 text-blue-700 dark:text-blue-300 border-blue-500/30',
+      theme: 'from-blue-950/20 via-sky-950/10 to-transparent hover:border-blue-500/50',
+      actionText: 'Open IRB & Research Intelligence',
+      buttonColor: 'bg-blue-700 hover:bg-blue-600 text-white',
+    },
+    {
+      id: 'tech_transfer' as const,
+      title: 'Technology Transfer, Incubation & Community Extension',
+      subtitle: 'Intellectual property & patent registry (EIPA), HU-BIIC deep-tech startup incubator, multilingual regional agro-advisories (English, Afaan Oromoo, Amharic), field demonstration stations, and strategic industry linkages (MoUs).',
+      icon: 'hub',
+      badge: 'Phase 9 • Tech Transfer & Community Extension',
+      badgeColor: 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/30',
+      theme: 'from-emerald-950/20 via-teal-950/10 to-transparent hover:border-emerald-500/50',
+      actionText: 'Open Tech Transfer & Extension Hub',
+      buttonColor: 'bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold',
     },
   ];
 
