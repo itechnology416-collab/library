@@ -1,0 +1,15 @@
+[
+  {
+    "id": "pay-101",
+    "creatorEmail": "engineering@wki.edu.et",
+    "amountETB": 45000,
+    "platformFeeETB": 4500,
+    "netAmountETB": 40500,
+    "paymentChannel": "telebirr",
+    "accountOrPhone": "+251927650724",
+    "status": "Disbursed",
+    "requestedAt": "2026-08-25T11:00:00Z",
+    "disbursedAt": "2026-08-26T09:15:00Z",
+    "transactionReference": "TB-PAYOUT-9942084"
+  }
+]

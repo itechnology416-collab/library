@@ -1,0 +1,11 @@
+[
+  {
+    "id": "wh-001",
+    "creatorEmail": "engineering@wki.edu.et",
+    "targetUrl": "https://erp.wki.edu.et/api/webhooks/marketplace-events",
+    "eventTypes": ["inquiry.created", "license.purchased"],
+    "secret": "whsec_wki_test_secret_99420",
+    "isActive": true,
+    "createdAt": "2026-08-01T10:00:00Z"
+  }
+]

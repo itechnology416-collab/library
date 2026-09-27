@@ -1,0 +1,36 @@
+[
+  {
+    "id": "req-101",
+    "projectId": "proj-001",
+    "projectTitle": "School & Campus ERP Management System",
+    "actionType": "Request Customization",
+    "customerName": "Alemayehu Tadesse",
+    "customerOrganization": "Dire Dawa Institute of Technology",
+    "customerPhone": "+251911223344",
+    "customerEmail": "alemayehu@ddit.edu.et",
+    "requirements": "We require integration with our custom biometrics attendance hardware and local registrar grading policies.",
+    "requiredFeatures": ["Biometric Attendance Hardware API", "Custom Transcript Template", "CBE Birr Auto-reconciliation"],
+    "preferredPlatform": "Web",
+    "customizationRequirements": "Need to add Afaan Oromoo and Amharic language UI toggles across all student screens.",
+    "budgetRange": "50,000 - 80,000 ETB",
+    "deadline": "2026-11-15",
+    "status": "In Contact",
+    "submittedAt": "2026-09-10T10:15:00Z",
+    "messages": [
+      {
+        "id": "msg-1",
+        "sender": "Alemayehu Tadesse",
+        "senderRole": "customer",
+        "message": "Hello, we would like to schedule a virtual demonstration with our IT committee next Tuesday.",
+        "timestamp": "2026-09-10T10:15:00Z"
+      },
+      {
+        "id": "msg-2",
+        "sender": "Wirtuu Engineering Lab",
+        "senderRole": "creator",
+        "message": "Thank you Mr. Alemayehu! We have received your request and can provide a custom demo with biometric sample integration.",
+        "timestamp": "2026-09-11T08:30:00Z"
+      }
+    ]
+  }
+]

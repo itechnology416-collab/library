@@ -1,0 +1,36 @@
+[
+  {
+    "id": "bundle-001",
+    "title": "Haramaya Academic & Linguistic Campus Suite",
+    "description": "The ultimate institutional modernization package combining the full School & Campus ERP with the Afaan Oromoo & Multilingual AI Translation Portal.",
+    "badge": "Institutional Best Seller",
+    "projectIds": ["proj-001", "proj-002"],
+    "originalPriceETB": 73000,
+    "discountedPriceETB": 58000,
+    "licenseType": "Multi-Campus Commercial License",
+    "features": [
+      "Full Campus ERP (Registrar, Grading, CBE Birr integration)",
+      "Afaan Oromoo, Amharic & English Neural Translation Engine",
+      "Priority 24/7 Deployment & Database Setup Support",
+      "Unified University Single Sign-On (SSO) Adapter",
+      "Lifetime Security & CVE Patching"
+    ]
+  },
+  {
+    "id": "bundle-002",
+    "title": "Regional Health & Multilingual Patient Care Bundle",
+    "description": "Equips clinics, hospitals, and rural health networks with the Telemedicine Mobile App and Multilingual translation assistance for patient intake and records.",
+    "badge": "Healthcare Bundle",
+    "projectIds": ["proj-002", "proj-003"],
+    "originalPriceETB": 93000,
+    "discountedPriceETB": 74000,
+    "licenseType": "Hospital & Clinic Network License",
+    "features": [
+      "Doctor-Patient Telemedicine & Video Consultation",
+      "Offline EHR Record Synchronization",
+      "Multilingual Intake & Prescription Translation",
+      "Integrated Telebirr & CBE Birr Pharmacy Billing",
+      "Biometric Patient QR Passports"
+    ]
+  }
+]

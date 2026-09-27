@@ -75,6 +75,7 @@ import { ResearchEthicsIntelligencePortal } from './components/ResearchEthicsInt
 import { TechTransferExtensionHub } from './components/TechTransferExtensionHub';
 import { EnterpriseRBACDashboard } from './components/admin/EnterpriseRBACDashboard';
 import { DigitalStorePage } from './components/store/DigitalStorePage';
+import { ProjectsMarketplacePage } from './components/marketplace/ProjectsMarketplacePage';
 import { OfflineIndicator } from './components/pwa/OfflineIndicator';
 import { useAuth } from './context/AuthContext';
 
@@ -529,6 +530,16 @@ export default function App() {
                   setActiveTab('dashboards');
                 }
               }}
+            />
+          </div>
+        )}
+
+        {/* TAB: PROJECTS MARKETPLACE */}
+        {(activeTab === 'projects' || activeTab === 'projects_marketplace' || activeTab === 'my_projects') && (
+          <div className="pt-2">
+            <ProjectsMarketplacePage
+              initialTab={activeTab}
+              onOpenRequestService={() => handleOpenRequestModal('ppt', 25)}
             />
           </div>
         )}

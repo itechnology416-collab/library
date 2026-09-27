@@ -1,0 +1,17 @@
+[
+  {
+    "id": "rev-001",
+    "projectId": "proj-001",
+    "reviewerName": "Eng. Dawit Kebede",
+    "reviewerOrganization": "Dire Dawa Technical College",
+    "isVerifiedBuyer": true,
+    "overallRating": 5,
+    "codeQualityRating": 5,
+    "documentationRating": 5,
+    "easeOfSetupRating": 4,
+    "supportRating": 5,
+    "title": "Robust academic ERP, deployed with zero friction",
+    "comment": "We licensed the School & Campus ERP for our 4,200 students. The automated gradebook and CBE Birr payment reconciliation have saved our registrar over 30 hours per semester. Excellent modular architecture.",
+    "createdAt": "2026-08-20T14:30:00Z"
+  }
+]
